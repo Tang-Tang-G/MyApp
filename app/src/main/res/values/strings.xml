@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">智能中控</string>
+    <string name="bottom_nav_overview_label">主页</string>
+    <string name="bottom_nav_house_label">家庭</string>
+    <string name="bottom_nav_scene_label">场景</string>
+    <string name="bottom_nav_my_label">个人</string>
 </resources>

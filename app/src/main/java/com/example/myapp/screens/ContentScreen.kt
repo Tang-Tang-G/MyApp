@@ -7,9 +7,9 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
@@ -19,20 +19,21 @@ import androidx.navigation.compose.rememberNavController
 import com.example.myapp.compose.BottomBar
 import com.example.myapp.compose.DrawerContent
 import com.example.myapp.compose.TopBar
-import com.example.myapp.pages.HomeView
-import com.example.myapp.pages.MyView
-import com.example.myapp.pages.OverView
-import com.example.myapp.pages.SceneView
+import com.example.myapp.model.NavigationModel
+import kotlinx.coroutines.launch
 
 @Preview(showBackground = true)
 @Composable
-fun Content(navController: NavController = rememberNavController()) {
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+fun Content(screenNavController: NavController = rememberNavController()) {
+    val bottomNavList = NavigationModel.bottomNavList
 
-    // TODO: unit
-    val pageSelection by remember { mutableIntStateOf(0) }
-
+    // The current content page
+    val pageSelection = remember { mutableIntStateOf(0) }
+    // used for navigate different content page
     val bottomNavController = rememberNavController()
+
+    val scope = rememberCoroutineScope()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -41,10 +42,20 @@ fun Content(navController: NavController = rememberNavController()) {
         Scaffold(
             topBar = {
                 TopBar {
-
+                    scope.launch {
+                        drawerState.apply {
+                            if (isOpen) close() else open()
+                        }
+                    }
                 }
             },
-            bottomBar = { BottomBar(bottomNavController) },
+            bottomBar = {
+                BottomBar(
+                    navController = bottomNavController,
+                    navigation = bottomNavList.toList(),
+                    selectIndex = pageSelection
+                )
+            },
             modifier = Modifier.fillMaxSize()
         ) { innerPadding ->
             NavHost(
@@ -52,17 +63,10 @@ fun Content(navController: NavController = rememberNavController()) {
                 startDestination = "overview",
                 modifier = Modifier.padding(innerPadding)
             ) {
-                composable("overview") {
-                    OverView()
-                }
-                composable("home") {
-                    HomeView()
-                }
-                composable("scene") {
-                    SceneView()
-                }
-                composable("my") {
-                    MyView()
+                bottomNavList.forEach { item ->
+                    composable(item.navigate) {
+                        item.composable()
+                    }
                 }
             }
         }
