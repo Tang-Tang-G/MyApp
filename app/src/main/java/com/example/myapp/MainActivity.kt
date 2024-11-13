@@ -11,6 +11,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.myapp.screens.Content
+import com.example.myapp.screens.Login
 import com.example.myapp.ui.theme.MyAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,12 +24,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MyAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                MainView()
             }
         }
     }
@@ -33,12 +33,16 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun MainView() {
-    MyAppTheme {
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            Greeting(
-                name = "Android",
-                modifier = Modifier.padding(innerPadding)
-            )
+    val navController = rememberNavController()
+    NavHost(
+        navController = navController,
+        startDestination = "content",
+    ) {
+        composable("login") {
+            Login(navController)
+        }
+        composable("content") {
+            Content(navController)
         }
     }
 }
