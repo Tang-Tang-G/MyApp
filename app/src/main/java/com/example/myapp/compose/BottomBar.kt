@@ -25,6 +25,8 @@ fun BottomBar(
                     selected = selectIndex.intValue == index,
                     onClick = {
                         selectIndex.intValue = index
+
+                        // TODO: pop the back stack
                         navController.navigate(navigation.navigate)
                     }
                 )
