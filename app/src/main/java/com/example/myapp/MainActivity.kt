@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.myapp.model.InitModel
 import com.example.myapp.screens.Content
 import com.example.myapp.screens.Login
 import com.example.myapp.ui.theme.MyAppTheme
@@ -23,6 +24,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            InitModel()
             MyAppTheme {
                 MainView()
             }
