@@ -17,9 +17,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.navigation.NavController
-import com.example.myapp.compose.TopBar
+import com.example.myapp.compose.TopBarWithBackArrow
 
 @Composable
 fun SignUp(navController: NavController) {
@@ -36,9 +35,8 @@ fun SignUp(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxSize()
         ) {
-            TopBar {
+            TopBarWithBackArrow(navController,"注册")
 
-            }
             TextField(
                 value = username,
                 onValueChange = { value ->

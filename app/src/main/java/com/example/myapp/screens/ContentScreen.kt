@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
@@ -18,7 +19,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapp.compose.BottomBar
 import com.example.myapp.compose.DrawerContent
-import com.example.myapp.compose.TopBar
+import com.example.myapp.compose.ContentTopBar
 import com.example.myapp.model.NavigationModel
 import kotlinx.coroutines.launch
 
@@ -41,13 +42,21 @@ fun Content(screenNavController: NavController = rememberNavController()) {
     ) {
         Scaffold(
             topBar = {
-                TopBar {
-                    scope.launch {
-                        drawerState.apply {
-                            if (isOpen) close() else open()
+                ContentTopBar(
+                    title = {
+                        Text(
+                            text =  bottomNavList[pageSelection.intValue].label,
+
+                        )
+                    },
+                    onMenuCLicked = {
+                        scope.launch {
+                            drawerState.apply {
+                                if (isOpen) close() else open()
+                            }
                         }
                     }
-                }
+                )
             },
             bottomBar = {
                 BottomBar(
