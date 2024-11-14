@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.myapp.model.InitModel
 import com.example.myapp.screens.Content
 import com.example.myapp.screens.Login
+import com.example.myapp.screens.SignUp
 import com.example.myapp.ui.theme.MyAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -43,13 +44,17 @@ fun MainView() {
         composable("content") {
             Content(navController)
         }
+        composable("signUp"){
+            SignUp(navController)
+        }
     }
 }
+
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
-        text = "Hello $name!",
+        text = "$name",
         modifier = modifier
     )
 }
@@ -59,6 +64,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     MyAppTheme {
-        Greeting("A")
+        Greeting("a")
     }
 }

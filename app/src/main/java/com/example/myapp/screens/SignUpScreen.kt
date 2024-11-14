@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -17,19 +16,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.navigation.NavController
 import com.example.myapp.compose.TopBar
 
-
 @Composable
-fun Login(navController: NavController) {
+fun SignUp(navController: NavController) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     Surface(
         modifier = Modifier.fillMaxSize()
-    ){
+    ) {
         Column(
             // 内容从上到下排布
             verticalArrangement = Arrangement.Top,
@@ -38,6 +36,9 @@ fun Login(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxSize()
         ) {
+            TopBar {
+
+            }
             TextField(
                 value = username,
                 onValueChange = { value ->
@@ -47,8 +48,7 @@ fun Login(navController: NavController) {
                     Text("username") // TODO: add to strings.xml, replaced by stringResource
                 },
                 singleLine = true,
-
-            )
+                )
             TextField(
                 value = password,
                 onValueChange = { value ->
@@ -66,24 +66,15 @@ fun Login(navController: NavController) {
             ) {
                 Button(
                     onClick = {
-                        navController.navigate("content") {
-                            popUpTo("login") { inclusive = true }
-                        }
-                    }
-                ) {
-                    Text("Sign in") // TODO: add to strings.xml, replaced by stringResource
-                }
-                Button(
-                    onClick = {
-                        navController.navigate("signUp")
+                        navController.popBackStack()
                     }
                 ) {
                     Text("Sign up") // TODO: add to strings.xml, replaced by stringResource
                 }
             }
-                TextButton(onClick = { navController.navigate("forgetPassword") }) {
-                    Text("forget password?")
-                }
+            TextButton(onClick = { navController.navigate("forgetPassword") }) {
+                Text("forget password?")
+            }
 
         }
     }
