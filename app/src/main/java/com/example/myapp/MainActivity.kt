@@ -13,8 +13,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapp.model.InitModel
 import com.example.myapp.screens.Content
-import com.example.myapp.screens.Login
-import com.example.myapp.screens.SignUp
+import com.example.myapp.screens.login.ForgetPassword
+import com.example.myapp.screens.login.Login
+import com.example.myapp.screens.login.SignUp
 import com.example.myapp.ui.theme.MyAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -36,7 +37,7 @@ fun MainView() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = "login",
+        startDestination = "content",
     ) {
         composable("login") {
             Login(navController)
@@ -46,6 +47,9 @@ fun MainView() {
         }
         composable("signUp"){
             SignUp(navController)
+        }
+        composable("ForgetPassword"){
+            ForgetPassword(navController)
         }
     }
 }
@@ -58,7 +62,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         modifier = modifier
     )
 }
-
 
 @Preview(showBackground = true)
 @Composable

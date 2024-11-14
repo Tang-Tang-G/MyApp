@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Modifier.Companion
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,11 +62,11 @@ fun ContentTopBar(title: @Composable () -> Unit, onMenuCLicked: () -> Unit) {
 fun TopBar(
     title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
-    navigationIcon: @Composable () -> Unit = {}
+    navigationIcon: @Composable () -> Unit = {},
 ) {
     TopAppBar(
         title = title,
         modifier = modifier,
-        navigationIcon = navigationIcon
+        navigationIcon = navigationIcon,
     )
 }
