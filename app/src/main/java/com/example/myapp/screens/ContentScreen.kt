@@ -11,11 +11,13 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.myapp.R
 import com.example.myapp.compose.BottomBar
 import com.example.myapp.compose.DrawerContent
 import com.example.myapp.compose.TopBar
@@ -34,6 +36,13 @@ fun Content(screenNavController: NavController = rememberNavController()) {
 
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val switchDrawer = {
+        scope.launch {
+            drawerState.apply {
+                if (isOpen) close() else open()
+            }
+        }
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -41,18 +50,12 @@ fun Content(screenNavController: NavController = rememberNavController()) {
     ) {
         Scaffold(
             topBar = {
-                TopBar {
-                    scope.launch {
-                        drawerState.apply {
-                            if (isOpen) close() else open()
-                        }
-                    }
-                }
+                TopBar(onMenuCLicked = { switchDrawer() })
             },
             bottomBar = {
                 BottomBar(
                     navController = bottomNavController,
-                    navigation = bottomNavList.toList(),
+                    navigation = bottomNavList,
                     selectIndex = pageSelection
                 )
             },
@@ -60,7 +63,7 @@ fun Content(screenNavController: NavController = rememberNavController()) {
         ) { innerPadding ->
             NavHost(
                 navController = bottomNavController,
-                startDestination = "overview",
+                startDestination = stringResource(R.string.bottom_nav_overview_navigation),
                 modifier = Modifier.padding(innerPadding)
             ) {
                 bottomNavList.forEach { item ->
