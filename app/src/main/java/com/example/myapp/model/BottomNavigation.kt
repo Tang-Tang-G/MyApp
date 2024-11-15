@@ -15,7 +15,12 @@ import com.example.myapp.pages.MyView
 import com.example.myapp.pages.OverView
 import com.example.myapp.pages.SceneView
 
-class Navigation(val label: String, val navigate: String, val icon: @Composable () -> Unit, val composable: @Composable () -> Unit = {})
+data class BottomNavigation(
+    val label: String,
+    val navigate: String,
+    val icon: @Composable () -> Unit,
+    val composable: @Composable () -> Unit = {}
+)
 
 
 @Composable
@@ -26,7 +31,12 @@ fun InitModel() {
         stringResource(R.string.bottom_nav_scene_label),
         stringResource(R.string.bottom_nav_my_label)
     )
-    val inner = listOf("overview", "home", "scene", "my")
+    val inner = listOf(
+        stringResource(R.string.bottom_nav_overview_navigation),
+        stringResource(R.string.bottom_nav_house_navigation),
+        stringResource(R.string.bottom_nav_scene_navigation),
+        stringResource(R.string.bottom_nav_my_navigation)
+    )
     val icons = listOf(
         Icons.Filled.Home,
         Icons.Filled.Favorite,
@@ -35,7 +45,7 @@ fun InitModel() {
     )
 
     bottomNavList = labels.indices.map { i ->
-        Navigation(
+        BottomNavigation(
             label = labels[i],
             icon = {
                 Icon(
@@ -57,5 +67,5 @@ fun InitModel() {
 }
 
 object NavigationModel {
-    lateinit var bottomNavList: List<Navigation>
+    lateinit var bottomNavList: List<BottomNavigation>
 }

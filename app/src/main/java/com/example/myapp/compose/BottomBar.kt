@@ -7,13 +7,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
 import androidx.navigation.NavController
-import com.example.myapp.model.Navigation
+import com.example.myapp.model.BottomNavigation
 
 
 @Composable
 fun BottomBar(
     navController: NavController,
-    navigation: List<Navigation>,
+    navigation: List<BottomNavigation>,
     selectIndex: MutableIntState,
 ) {
     BottomAppBar {
