@@ -2,7 +2,7 @@ package com.example.myapp.compose
 
 import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -21,7 +21,7 @@ fun TopBarWithBack(title: String, goBack: () -> Unit) {
         navigationIcon = {
             IconButton(onClick = goBack) {
                 Icon(
-                    imageVector = Icons.Filled.KeyboardArrowLeft,
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                     contentDescription = "Close",
                     tint = Color.Black
                 )
@@ -29,7 +29,6 @@ fun TopBarWithBack(title: String, goBack: () -> Unit) {
         },
     )
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
