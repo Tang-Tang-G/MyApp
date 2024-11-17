@@ -13,10 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarWithBack(title: String, goBack: () -> Unit) {
-    TopAppBar(
+    TopBar(
         title = { Text(title) },
         navigationIcon = {
             IconButton(onClick = goBack) {
@@ -30,10 +29,9 @@ fun TopBarWithBack(title: String, goBack: () -> Unit) {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContentTopBar(title: @Composable () -> Unit, onMenuCLicked: () -> Unit) {
-    TopAppBar(
+    TopBar(
         title = title,
         navigationIcon = {
             Icon(
