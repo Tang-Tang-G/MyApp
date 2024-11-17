@@ -58,11 +58,11 @@ fun MainView() {
                 },
                 navigateToSignup = {
                     // TODO: judge whether to popBackStack
-                    navController.navigate(contentNav)
+                    navController.navigate(signupNav)
                 },
                 navigateToForgetPassword = {
                     // TODO: judge whether to popBackStack
-                    navController.navigate(contentNav)
+                    navController.navigate(forgetPasswordNav)
                 }
             )
         }
