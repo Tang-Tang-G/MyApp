@@ -4,9 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -35,14 +34,26 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainView() {
     val navController = rememberNavController()
+    val loginNav = stringResource(R.string.screen_nav_login_navigation)
+    val contentNav = stringResource(R.string.screen_nav_content_navigation)
+
     NavHost(
         navController = navController,
-        startDestination = "content",
+        startDestination = loginNav,
     ) {
-        composable("login") {
-            Login(navController)
+        composable(loginNav) {
+            Login(navigateToContent = {
+                navController.navigate(contentNav) {
+                    popUpTo(loginNav) {
+                        inclusive = true
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            })
         }
-        composable("content") {
+        composable(contentNav) {
             Content(navController)
         }
         composable("signUp"){
@@ -51,22 +62,5 @@ fun MainView() {
         composable("ForgetPassword"){
             ForgetPassword(navController)
         }
-    }
-}
-
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "$name",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MyAppTheme {
-        Greeting("a")
     }
 }
