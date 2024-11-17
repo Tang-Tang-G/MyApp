@@ -12,4 +12,6 @@
 
     <string name="screen_nav_login_navigation">login</string>
     <string name="screen_nav_content_navigation">content</string>
+    <string name="screen_nav_signup_navigation">signup</string>
+    <string name="screen_nav_forget_password_navigation">forget_password</string>
 </resources>

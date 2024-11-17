@@ -36,6 +36,8 @@ fun MainView() {
     val navController = rememberNavController()
     val loginNav = stringResource(R.string.screen_nav_login_navigation)
     val contentNav = stringResource(R.string.screen_nav_content_navigation)
+    val signupNav = stringResource(R.string.screen_nav_signup_navigation)
+    val forgetPasswordNav = stringResource(R.string.screen_nav_forget_password_navigation)
 
     NavHost(
         navController = navController,
@@ -56,10 +58,10 @@ fun MainView() {
         composable(contentNav) {
             Content(navController)
         }
-        composable("signUp"){
+        composable(signupNav){
             SignUp(navController)
         }
-        composable("ForgetPassword"){
+        composable(forgetPasswordNav){
             ForgetPassword(navController)
         }
     }
