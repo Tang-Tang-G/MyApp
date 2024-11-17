@@ -44,24 +44,37 @@ fun MainView() {
         startDestination = loginNav,
     ) {
         composable(loginNav) {
-            Login(navigateToContent = {
-                navController.navigate(contentNav) {
-                    popUpTo(loginNav) {
-                        inclusive = true
-                        saveState = true
+            Login(
+                navigateToContent = {
+                    // This is avoid back from content to login
+                    navController.navigate(contentNav) {
+                        popUpTo(loginNav) {
+                            inclusive = true
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
                     }
-                    launchSingleTop = true
-                    restoreState = true
+                },
+                navigateToSignup = {
+                    // TODO: judge whether to popBackStack
+                    navController.navigate(contentNav)
+                },
+                navigateToForgetPassword = {
+                    // TODO: judge whether to popBackStack
+                    navController.navigate(contentNav)
                 }
-            })
+            )
         }
         composable(contentNav) {
             Content(navController)
         }
-        composable(signupNav){
+        composable(signupNav) {
+            // TODO: Reduce responsibilities
             SignUp(navController)
         }
-        composable(forgetPasswordNav){
+        composable(forgetPasswordNav) {
+            // TODO: Reduce responsibilities
             ForgetPassword(navController)
         }
     }
