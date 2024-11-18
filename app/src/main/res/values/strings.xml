@@ -4,4 +4,14 @@
     <string name="bottom_nav_house_label">家庭</string>
     <string name="bottom_nav_scene_label">场景</string>
     <string name="bottom_nav_my_label">个人</string>
+
+    <string name="bottom_nav_overview_navigation">overview</string>
+    <string name="bottom_nav_house_navigation">home</string>
+    <string name="bottom_nav_scene_navigation">scene</string>
+    <string name="bottom_nav_my_navigation">my</string>
+
+    <string name="screen_nav_login_navigation">login</string>
+    <string name="screen_nav_content_navigation">content</string>
+    <string name="screen_nav_signup_navigation">signup</string>
+    <string name="screen_nav_forget_password_navigation">forget_password</string>
 </resources>

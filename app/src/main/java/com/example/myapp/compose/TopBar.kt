@@ -1,50 +1,37 @@
 package com.example.myapp.compose
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.Modifier.Companion
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
-import androidx.navigation.NavController
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarWithBackArrow(navController: NavController, title:String) {
-    TopAppBar(
+fun TopBarWithBack(title: String, goBack: () -> Unit) {
+    TopBar(
         title = { Text(title) },
         navigationIcon = {
-            IconButton(onClick = {
-                // 点击图标时，返回到上一个页面
-                navController.popBackStack()
-            }) {
+            IconButton(onClick = goBack) {
                 Icon(
-                    imageVector = Icons.Filled.KeyboardArrowLeft,
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                     contentDescription = "Close",
-                    tint =Color.Black
+                    tint = Color.Black
                 )
             }
         },
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContentTopBar(title: @Composable () -> Unit, onMenuCLicked: () -> Unit) {
-    TopAppBar(
+    TopBar(
         title = title,
         navigationIcon = {
             Icon(

@@ -2,14 +2,12 @@ package com.example.myapp.screens.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,9 +17,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.myapp.compose.TopBarWithBackArrow
+import androidx.navigation.compose.rememberNavController
+import com.example.myapp.compose.TopBarWithBack
 
 @Composable
 fun SignUp(navController: NavController) {
@@ -39,7 +39,10 @@ fun SignUp(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxSize()
         ) {
-            TopBarWithBackArrow(navController, "注册")
+            TopBarWithBack(
+                title = "注册",
+                goBack = { navController.popBackStack() }
+            )
             Spacer(modifier = Modifier.height(50.dp))
             TextField(
                 value = username,
@@ -96,4 +99,10 @@ fun SignUp(navController: NavController) {
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SignupPreview() {
+    SignUp(rememberNavController())
 }
