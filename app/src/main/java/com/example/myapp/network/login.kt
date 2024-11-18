@@ -24,7 +24,6 @@ suspend fun login(username: String, password: String): LoginInfo? {
             .url("http://47.108.27.238/api/login")
             .post(body.toString().toRequestBody("application/json".toMediaType()))
             .build()
-
         try {
             val response = OkHttpSingleton.client.newCall(request).execute()
             response.body?.let {
@@ -46,6 +45,7 @@ suspend fun signup(username: String, password: String): Boolean {
     return false
 }
 
+//捕获数据
 suspend fun fetchData(token: String): JSONObject? {
     return withContext(Dispatchers.IO) {
         val request = Request.Builder()
@@ -55,17 +55,36 @@ suspend fun fetchData(token: String): JSONObject? {
             .build()
 
         val response = OkHttpSingleton.client.newCall(request).execute()
-        response.body?.let {
-            val json = it.string()
-            Log.d("fetchData", json)
-            try {
-                val obj = JSONObject(json)
-                val data = obj["data"] as JSONObject
+
+//        response.body?.let {
+//            val json = it.string()
+//            Log.d("fetchData", json)
+//            try {
+//                val obj = JSONObject(json)
+//                val data = obj["data"] as JSONObject
+//                data
+//            } catch (e: Exception) {
+//                Log.d("fetchData", "error", e)
+//                null
+//            }
+//        }
+
+        // 使用 use 函数自动关闭 response
+        return@withContext try {
+            response.use {
+                if (!response.isSuccessful) {
+                    Log.d("fetchData", "Request failed with code: ${response.code}")
+                    return@use null
+                }
+                val body = response.body?.string() ?: return@use null
+                Log.d("fetchData", body)
+                val obj = JSONObject(body)
+                val data = obj.getJSONObject("data")
                 data
-            } catch (e: Exception) {
-                Log.d("fetchData", "error", e)
-                null
             }
+        } catch (e: Exception) {
+            Log.d("fetchData", "Error occurred", e)
+            null
         }
     }
 }
