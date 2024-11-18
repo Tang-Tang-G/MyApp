@@ -29,7 +29,6 @@ fun MyView() {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Text("My Page")
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
@@ -50,7 +49,6 @@ fun MyView() {
         }
     }
 }
-
 
 @Preview
 @Composable
