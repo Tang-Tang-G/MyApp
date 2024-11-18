@@ -20,14 +20,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapp.R
 import com.example.myapp.compose.BottomBar
-import com.example.myapp.compose.DrawerContent
+import com.example.myapp.compose.ContentFloatButton
 import com.example.myapp.compose.ContentTopBar
+import com.example.myapp.compose.DrawerContent
 import com.example.myapp.model.NavigationModel
 import kotlinx.coroutines.launch
 
-@Preview(showBackground = true)
 @Composable
-fun Content(screenNavController: NavController = rememberNavController()) {
+fun Content(screenNavController: NavController) {
     val bottomNavList = NavigationModel.bottomNavList
 
     // The current content page
@@ -54,7 +54,7 @@ fun Content(screenNavController: NavController = rememberNavController()) {
                 ContentTopBar(
                     title = {
                         Text(
-                            text =  bottomNavList[pageSelection.intValue].label,
+                            text = bottomNavList[pageSelection.intValue].label,
                         )
                     },
                     onMenuCLicked = { switchDrawer() }
@@ -66,6 +66,9 @@ fun Content(screenNavController: NavController = rememberNavController()) {
                     navigation = bottomNavList,
                     selectIndex = pageSelection
                 )
+            },
+            floatingActionButton = {
+                ContentFloatButton(onClick = {}, show = pageSelection.intValue == 0)
             },
             modifier = Modifier.fillMaxSize()
         ) { innerPadding ->
@@ -82,4 +85,10 @@ fun Content(screenNavController: NavController = rememberNavController()) {
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun ContentPreview() {
+    Content(rememberNavController())
 }
