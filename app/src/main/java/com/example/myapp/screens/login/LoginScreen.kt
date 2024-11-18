@@ -1,6 +1,6 @@
 package com.example.myapp.screens.login
 
-import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -28,11 +29,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapp.compose.TopBar
+import com.example.myapp.model.LoginViewModel
 import com.example.myapp.network.login
 import com.example.myapp.ui.theme.MyAppTheme
 import kotlinx.coroutines.launch
@@ -41,16 +44,16 @@ import kotlinx.coroutines.launch
 fun Login(
     navigateToContent: () -> Unit = {},
     navigateToSignup: () -> Unit = {},
-    navigateToForgetPassword: () -> Unit = {}
+    navigateToForgetPassword: () -> Unit = {},
 ) {
+    val loginViewModel = LoginViewModel
+
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var checked by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-//
-//    val loginViewModel = LoginViewModel()
-//    val loginResult = loginViewModel.loginResult.observe()
+    val context = LocalContext.current
 
     Surface(
         modifier = Modifier.fillMaxSize()
@@ -96,10 +99,17 @@ fun Login(
                 onClick = {
                     if (checked) {
                         scope.launch {
-                            val response = login("wzy", "123456")
-                            Log.d(this.javaClass.name, response.orEmpty())
+                            // username and password get from the remember value
+                            val loginInfo = login(username, password)
+                            if (loginInfo != null) {
+                                loginViewModel.setLoginInfo(username, loginInfo.token)
+                                snackbarHostState.showSnackbar("登入成功", duration = SnackbarDuration.Short)
+                                Toast.makeText(context, "登入成功", Toast.LENGTH_SHORT).show()
+                                navigateToContent()
+                            } else {
+                                snackbarHostState.showSnackbar("登入出错")
+                            }
                         }
-                        navigateToContent()
                     } else {
                         scope.launch {
                             snackbarHostState.showSnackbar("需要确定协议!")
