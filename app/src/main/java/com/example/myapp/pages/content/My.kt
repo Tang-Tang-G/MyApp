@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import com.example.myapp.compose.OptionalBar
 import com.example.myapp.model.LoginViewModel
 
 @Composable
@@ -46,6 +47,12 @@ fun MyView() {
                     )
                 }
             }
+            OptionalBar("个人信息",
+                onClick = {
+                    // 跳转到个人信息页面
+
+                })
+
         }
     }
 }
