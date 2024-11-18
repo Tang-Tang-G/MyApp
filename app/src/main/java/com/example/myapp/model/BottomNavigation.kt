@@ -10,10 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.example.myapp.R
 import com.example.myapp.model.NavigationModel.bottomNavList
-import com.example.myapp.pages.HomeView
-import com.example.myapp.pages.MyView
-import com.example.myapp.pages.OverView
-import com.example.myapp.pages.SceneView
+import com.example.myapp.pages.content.HomeView
+import com.example.myapp.pages.content.MyView
+import com.example.myapp.pages.content.OverView
+import com.example.myapp.pages.content.SceneView
 
 data class BottomNavigation(
     val label: String,
