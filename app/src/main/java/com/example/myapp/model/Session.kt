@@ -42,10 +42,11 @@ object SessionManager {
         editor.clear()
         editor.apply()
     }
+
 }
 
 object LoginViewModel : ViewModel() {
-    private val _token = MutableLiveData<String>()
+    private val _token = MutableLiveData<String>("")
     val token: LiveData<String> = _token
 
     private val _username = MutableLiveData<String>()
@@ -55,5 +56,10 @@ object LoginViewModel : ViewModel() {
         Log.d("viewmodel", "save $username, $token")
         _username.value = username
         _token.value = token
+    }
+    fun logout() {
+        Log.d("viewmodel", "logout")
+        _username.value = "Not login"
+        _token.value = ""
     }
 }
