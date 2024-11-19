@@ -7,9 +7,7 @@ import com.example.myapp.database.House
 import org.json.JSONException
 import org.json.JSONObject
 
-class JsonParser {
-
-    fun parseJsonData(data: JSONObject): List<House> {
+fun ParseJson(data: JSONObject): List<House> {
         val houseList = mutableListOf<House>()
         try {
             val housesDevices = data.getJSONArray("houses_devices")
@@ -49,4 +47,3 @@ class JsonParser {
         }
         return houseList
     }
-}
