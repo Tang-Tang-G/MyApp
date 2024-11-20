@@ -24,6 +24,10 @@ import com.example.myapp.compose.ContentFloatButton
 import com.example.myapp.compose.ContentTopBar
 import com.example.myapp.compose.DrawerContent
 import com.example.myapp.model.NavigationModel
+import com.example.myapp.pages.content.HomeView
+import com.example.myapp.pages.content.MyView
+import com.example.myapp.pages.content.OverView
+import com.example.myapp.pages.content.SceneView
 import kotlinx.coroutines.launch
 
 @Composable
@@ -34,6 +38,13 @@ fun Content(screenNavController: NavController) {
     val pageSelection = remember { mutableIntStateOf(0) }
     // used for navigate different content page
     val bottomNavController = rememberNavController()
+
+    val overviewNav = stringResource(R.string.bottom_nav_overview_navigation)
+    val houseNav = stringResource(R.string.bottom_nav_house_navigation)
+    val sceneNav = stringResource(R.string.bottom_nav_scene_navigation)
+    val myNav = stringResource(R.string.bottom_nav_my_navigation)
+    val loginNav = stringResource(R.string.screen_nav_login_navigation)
+    val contentNav = stringResource(R.string.screen_nav_content_navigation)
 
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -77,11 +88,31 @@ fun Content(screenNavController: NavController) {
                 startDestination = stringResource(R.string.bottom_nav_overview_navigation),
                 modifier = Modifier.padding(innerPadding)
             ) {
-                bottomNavList.forEach { item ->
-                    composable(item.navigate) {
-                        item.composable()
-                    }
+                composable(overviewNav)
+                {
+                    OverView()
                 }
+                composable(houseNav)
+                {
+                    HomeView()
+                }
+                composable(sceneNav)
+                {
+                    SceneView()
+                }
+                composable(myNav) {
+                    MyView(onLogout = {
+                        screenNavController.navigate(loginNav) {
+                            popUpTo(contentNav) {
+                                inclusive = true
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    })
+                }
+
             }
         }
     }
