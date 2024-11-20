@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModel
 // TODO: gson
 //data class ApiResponse<T>(val code: Int, val message: String, val timestamp: Int, val data: T)
 
-
 data class LoginInfo(val username: String, val token: String)
 
 object SessionManager {
@@ -57,6 +56,7 @@ object LoginViewModel : ViewModel() {
         _username.value = username
         _token.value = token
     }
+
     fun logout() {
         Log.d("viewmodel", "logout")
         _username.value = "Not login"
