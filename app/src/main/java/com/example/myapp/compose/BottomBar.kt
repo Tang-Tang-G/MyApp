@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
 import androidx.navigation.NavController
 import com.example.myapp.model.BottomNavigation
+import com.example.myapp.navigateTo
 
 
 @Composable
@@ -25,9 +26,7 @@ fun BottomBar(
                     selected = selectIndex.intValue == index,
                     onClick = {
                         selectIndex.intValue = index
-
-                        // TODO: pop the back stack
-                        navController.navigate(navigation.navigate)
+                        navController.navigateTo(navigation.navigate)
                     }
                 )
             }
