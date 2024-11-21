@@ -108,8 +108,6 @@ fun Login(
                                 loginViewModel.setLoginInfo(username, loginInfo.token)
                                 SessionManager.saveSession(context, loginInfo.username, loginInfo.token)
                                 snackbarHostState.showSnackbar("登入成功", duration = SnackbarDuration.Short)
-                                Toast.makeText(context, "登入成功", Toast.LENGTH_SHORT).show()
-
                                 navigateToContent()
                             } else {
                                 snackbarHostState.showSnackbar("登入出错")
