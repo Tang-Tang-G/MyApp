@@ -14,8 +14,9 @@ object OkHttpSingleton {
     val client = OkHttpClient()
 }
 
+object AccountManager
 
-suspend fun login(username: String, password: String): LoginInfo? {
+suspend fun AccountManager.login(username: String, password: String): LoginInfo? {
     return withContext(Dispatchers.IO) {
         val body = JSONObject()
         body.put("username", username)
@@ -42,11 +43,58 @@ suspend fun login(username: String, password: String): LoginInfo? {
     }
 }
 
-suspend fun signup(username: String, password: String): Boolean {
-    return false
+suspend fun AccountManager.auth(token: String): Boolean {
+    return withContext(Dispatchers.IO) {
+        val request = Request.Builder()
+            .url("http://47.108.27.238/api/auth")
+            .addHeader("Authorization", "Bearer $token")
+            .build()
+
+        val response = OkHttpSingleton.client.newCall(request).execute()
+        response.body?.let {
+            val json = it.string()
+            Log.d("Auth", json)
+            try {
+                val obj = JSONObject(json)
+                val code = obj["code"] as Int
+                code == 200
+            } catch (e: Exception) {
+                false
+            }
+        } ?: false
+    }
 }
 
-suspend fun fetchData(token: String): JSONObject? {
+suspend fun AccountManager.signup(username: String, password: String): LoginInfo? {
+    return withContext(Dispatchers.IO) {
+        val body = JSONObject()
+        body.put("username", username)
+        body.put("password", password)
+        val request = Request.Builder()
+            .url("http://47.108.27.238/api/signup")
+            .post(body.toString().toRequestBody("application/json".toMediaType()))
+            .build()
+
+        try {
+            val response = OkHttpSingleton.client.newCall(request).execute()
+            response.body?.let {
+                val json = it.string()
+                Log.d("network", "json: $json")
+                val obj = JSONObject(json)
+                if (obj["code"] != 200) {
+                    return@let null
+                }
+                val data = obj["data"] as JSONObject
+                LoginInfo(username, data["token"].toString())
+            }
+        } catch (e: Exception) {
+            Log.d(this.javaClass.name, "no data", e)
+            null
+        }
+    }
+}
+
+suspend fun AccountManager.fetchData(token: String): JSONObject? {
     return withContext(Dispatchers.IO) {
         val request = Request.Builder()
             .url("http://47.108.27.238/api/my/device")
