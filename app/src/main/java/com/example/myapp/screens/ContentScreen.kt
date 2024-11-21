@@ -68,7 +68,9 @@ fun Content(screenNavController: NavController) {
                 )
             },
             floatingActionButton = {
-                ContentFloatButton(onClick = {}, show = pageSelection.intValue == 0)
+                ContentFloatButton(onClick = {
+                    screenNavController.navigate("add device")
+                }, show = pageSelection.intValue == 0)
             },
             modifier = Modifier.fillMaxSize()
         ) { innerPadding ->
