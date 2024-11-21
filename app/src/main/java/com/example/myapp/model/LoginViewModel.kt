@@ -1,5 +1,6 @@
 package com.example.myapp.model
 
+import android.content.Context
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
@@ -16,10 +17,6 @@ inline fun <reified T : ViewModel> activityViewModel(): T {
     return ViewModelProvider(activity)[T::class.java]
 }
 
-// TODO: gson
-//data class ApiResponse<T>(val code: Int, val message: String, val timestamp: Int, val data: T)
-
-
 data class LoginInfo(val username: String, val token: String)
 
 class LoginViewModel : ViewModel() {
@@ -33,5 +30,13 @@ class LoginViewModel : ViewModel() {
         Log.d("viewmodel", "save $username, $token")
         _username.value = username
         _token.value = token
+    }
+
+    fun initializeFromSession(context: Context) {
+        val savedUsername = SessionManager.getUsername(context)
+        val savedToken = SessionManager.getToken(context)
+        if (!savedUsername.isNullOrEmpty() && !savedToken.isNullOrEmpty()) {
+            setLoginInfo(savedUsername, savedToken)
+        }
     }
 }
