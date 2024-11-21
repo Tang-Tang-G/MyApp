@@ -13,12 +13,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapp.model.InitModel
+import com.example.myapp.model.LoginViewModel
 import com.example.myapp.model.SessionManager
+import com.example.myapp.model.activityViewModel
 import com.example.myapp.network.AccountManager
 import com.example.myapp.network.auth
 import com.example.myapp.screens.Content
@@ -45,14 +46,7 @@ class MainActivity : ComponentActivity() {
 
 fun NavController.navigateTo(route: String) {
     this.navigate(route) {
-        // 清除返回栈，确保只有一个目的地在栈中
-        popUpTo(this@navigateTo.graph.findStartDestination().id) {
-            saveState = true
-        }
-        // 防止重复导航
-        launchSingleTop = true
-        // 恢复状态（如滚动位置等）
-        restoreState = true
+        popBackStack()
     }
 }
 
@@ -65,15 +59,19 @@ fun MainView() {
     val contentNav = stringResource(R.string.screen_nav_content_navigation)
     val signupNav = stringResource(R.string.screen_nav_signup_navigation)
     val forgetPasswordNav = stringResource(R.string.screen_nav_forget_password_navigation)
-    val scope = rememberCoroutineScope()
 
 
-    SessionManager.getToken(LocalContext.current)?.let { token ->
+    val context = LocalContext.current
+    SessionManager.getToken(context)?.let { token ->
+        val loginViewModel: LoginViewModel = activityViewModel()
+        val scope = rememberCoroutineScope()
         scope.launch {
             val ok = AccountManager.auth(token)
             if (!ok) {
                 navController.navigateTo(loginNav)
                 Log.d("Auth", "need login")
+            } else {
+                loginViewModel.initializeFromSession(context)
             }
         }
     }
