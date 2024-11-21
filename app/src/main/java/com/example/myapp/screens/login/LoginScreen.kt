@@ -36,6 +36,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapp.compose.TopBar
 import com.example.myapp.model.LoginViewModel
+import com.example.myapp.model.SessionManager
+import com.example.myapp.model.activityViewModel
+import com.example.myapp.network.AccountManager
 import com.example.myapp.network.login
 import com.example.myapp.ui.theme.MyAppTheme
 import kotlinx.coroutines.launch
@@ -46,7 +49,7 @@ fun Login(
     navigateToSignup: () -> Unit = {},
     navigateToForgetPassword: () -> Unit = {},
 ) {
-    val loginViewModel = LoginViewModel
+    val loginViewModel: LoginViewModel = activityViewModel()
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -100,11 +103,13 @@ fun Login(
                     if (checked) {
                         scope.launch {
                             // username and password get from the remember value
-                            val loginInfo = login(username, password)
+                            val loginInfo = AccountManager.login(username, password)
                             if (loginInfo != null) {
                                 loginViewModel.setLoginInfo(username, loginInfo.token)
+                                SessionManager.saveSession(context, loginInfo.username, loginInfo.token)
                                 snackbarHostState.showSnackbar("登入成功", duration = SnackbarDuration.Short)
                                 Toast.makeText(context, "登入成功", Toast.LENGTH_SHORT).show()
+
                                 navigateToContent()
                             } else {
                                 snackbarHostState.showSnackbar("登入出错")
