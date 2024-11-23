@@ -1,5 +1,7 @@
 package com.example.myapp.screens
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
@@ -14,6 +16,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -55,6 +58,7 @@ fun Content(screenNavController: NavController) {
                     title = {
                         Text(
                             text = bottomNavList[pageSelection.intValue].label,
+                            modifier = Modifier.padding(start = 20.dp)
                         )
                     },
                     onMenuCLicked = { switchDrawer() }
@@ -77,7 +81,9 @@ fun Content(screenNavController: NavController) {
             NavHost(
                 navController = bottomNavController,
                 startDestination = stringResource(R.string.bottom_nav_overview_navigation),
-                modifier = Modifier.padding(innerPadding)
+                enterTransition = { EnterTransition.None },
+                exitTransition = { ExitTransition.None },
+                modifier = Modifier.padding(innerPadding),
             ) {
                 bottomNavList.forEach { item ->
                     composable(item.navigate) {
