@@ -1,6 +1,5 @@
 package com.example.myapp.screens.login
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.Button
@@ -30,10 +31,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myapp.R
 import com.example.myapp.compose.TopBar
 import com.example.myapp.model.LoginViewModel
 import com.example.myapp.model.SessionManager
@@ -56,6 +62,7 @@ fun Login(
     var checked by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    val focusManager = LocalFocusManager.current
     val context = LocalContext.current
 
     Surface(
@@ -77,29 +84,25 @@ fun Login(
             Spacer(modifier = Modifier.height(50.dp))
             TextField(
                 value = username,
-                onValueChange = { value ->
-                    username = value
-                },
-                label = {
-                    Text("用户名") // TODO: add to strings.xml, replaced by stringResource
-                },
+                onValueChange = { value -> username = value },
+                label = { Text(stringResource(R.string.login_screen_username_text_field_placeholder)) },
                 singleLine = true,
             )
             Spacer(modifier = Modifier.height(50.dp))
             TextField(
                 value = password,
-                onValueChange = { value ->
-                    password = value
-                },
-                label = {
-                    Text("输入密码") // TODO: add to strings.xml, replaced by stringResource
-                },
+                onValueChange = { value -> password = value },
+                label = { Text(stringResource(R.string.login_screen_username_text_field_placeholder)) },
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
+                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done, keyboardType = KeyboardType.Password)
             )
             Spacer(modifier = Modifier.height(50.dp))
             Button(
                 onClick = {
+                    // Finish input then hide the keyboard
+                    focusManager.clearFocus()
                     if (checked) {
                         scope.launch {
                             // username and password get from the remember value
