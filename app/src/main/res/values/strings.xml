@@ -14,4 +14,8 @@
     <string name="screen_nav_content_navigation">content</string>
     <string name="screen_nav_signup_navigation">signup</string>
     <string name="screen_nav_forget_password_navigation">forget_password</string>
+
+    <string name="login_screen_username_text_field_placeholder">用户名</string>
+    <string name="login_screen_password_text_field_placeholder">输入密码</string>
+
 </resources>
