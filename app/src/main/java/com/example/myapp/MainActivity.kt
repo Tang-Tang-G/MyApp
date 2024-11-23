@@ -5,8 +5,8 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
@@ -72,6 +72,7 @@ fun MainView() {
                 Log.d("Auth", "need login")
             } else {
                 loginViewModel.initializeFromSession(context)
+                // TODO: show that the login session is expired, need re-login
             }
         }
     }
@@ -84,18 +85,17 @@ fun MainView() {
         } else {
             loginNav
         },
-        //TODO: add animation
         enterTransition = {
-            slideIntoContainer(
-                towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(300)
-            )
+            slideInHorizontally { fullWidth -> fullWidth }
         },
         exitTransition = {
-            slideOutOfContainer(
-                towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(300)
-            )
+            slideOutHorizontally { fullWidth -> -fullWidth } // 页面向左侧退出
+        },
+        popEnterTransition = {
+            slideInHorizontally { fullWidth -> -fullWidth } // 返回时从左侧进入
+        },
+        popExitTransition = {
+            slideOutHorizontally { fullWidth -> fullWidth } // 返回时向右侧退出
         }
     ) {
         composable(loginNav) {
