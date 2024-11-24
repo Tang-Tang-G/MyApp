@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -47,6 +48,7 @@ import com.example.myapp.model.activityViewModel
 import com.example.myapp.network.AccountManager
 import com.example.myapp.network.login
 import com.example.myapp.ui.theme.MyAppTheme
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -62,8 +64,9 @@ fun Login(
     var checked by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    val focusManager = LocalFocusManager.current
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Surface(
         modifier = Modifier.fillMaxSize()
@@ -92,25 +95,41 @@ fun Login(
             TextField(
                 value = password,
                 onValueChange = { value -> password = value },
-                label = { Text(stringResource(R.string.login_screen_username_text_field_placeholder)) },
+                label = { Text(stringResource(R.string.login_screen_password_text_field_placeholder)) },
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done, keyboardType = KeyboardType.Password)
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done,
+                    keyboardType = KeyboardType.Password
+                )
             )
             Spacer(modifier = Modifier.height(50.dp))
             Button(
                 onClick = {
-                    // Finish input then hide the keyboard
+                    // Finish input then hide the keyboard, 2 chose 1
                     focusManager.clearFocus()
+//                    keyboardController?.hide()
+
                     if (checked) {
                         scope.launch {
                             // username and password get from the remember value
                             val loginInfo = AccountManager.login(username, password)
                             if (loginInfo != null) {
                                 loginViewModel.setLoginInfo(username, loginInfo.token)
-                                SessionManager.saveSession(context, loginInfo.username, loginInfo.token)
-                                snackbarHostState.showSnackbar("登入成功", duration = SnackbarDuration.Short)
+                                SessionManager.saveSession(
+                                    context,
+                                    loginInfo.username,
+                                    loginInfo.token
+                                )
+                                val job = launch {
+                                    snackbarHostState.showSnackbar(
+                                        "登入成功",
+                                        duration = SnackbarDuration.Short
+                                    )
+                                }
+                                delay(500)
+                                job.cancel()
                                 navigateToContent()
                             } else {
                                 snackbarHostState.showSnackbar("登入出错")
