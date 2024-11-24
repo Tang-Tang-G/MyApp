@@ -15,17 +15,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapp.compose.OptionalBar
-import com.example.myapp.model.LoginViewModel
+import com.example.myapp.model.SessionManager
 
 @Composable
 fun MyStartView(
-    username: String, onLogout: () -> Unit = {},
+    username: String,
+    onLogout: () -> Unit = {},
     onChangePasswordClick: () -> Unit = {},
-    onUserInfoClick: () -> Unit = {}
+    onUserInfoClick: () -> Unit = {},
 ) {
+    val context = LocalContext.current
+
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -78,7 +82,7 @@ fun MyStartView(
             Button(
                 onClick = {
                     //点击以后退出登录
-                    LoginViewModel.logout();
+                    SessionManager.clearSession(context)
                     onLogout()
                 },
                 modifier = Modifier.fillMaxWidth(0.5f),

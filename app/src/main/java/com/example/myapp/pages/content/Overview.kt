@@ -101,6 +101,8 @@ fun OverView() {
                                             )
                                             if (open) {
                                                 Spacer(modifier = Modifier.height(8.dp))
+
+                                                // details
                                                 Text(text = device.modelName)
                                             }
                                         }
