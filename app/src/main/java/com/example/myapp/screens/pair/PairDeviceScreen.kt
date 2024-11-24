@@ -1,5 +1,7 @@
 package com.example.myapp.screens.pair
 
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -50,6 +52,18 @@ fun PairDevice(
         NavHost(
             navController = navController,
             startDestination = "start",
+            enterTransition = {
+                slideInHorizontally { fullWidth -> fullWidth }
+            },
+            exitTransition = {
+                slideOutHorizontally { fullWidth -> -fullWidth } // 页面向左侧退出
+            },
+            popEnterTransition = {
+                slideInHorizontally { fullWidth -> -fullWidth } // 返回时从左侧进入
+            },
+            popExitTransition = {
+                slideOutHorizontally { fullWidth -> fullWidth } // 返回时向右侧退出
+            }
         ) {
             composable("start") {
                 Column(
