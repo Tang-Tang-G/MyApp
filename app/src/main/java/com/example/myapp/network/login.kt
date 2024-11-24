@@ -1,9 +1,12 @@
 package com.example.myapp.network
 
 import android.util.Log
+import com.example.myapp.model.AccountDevices
+import com.example.myapp.model.ApiResponse
 import com.example.myapp.model.LoginInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -14,8 +17,11 @@ object OkHttpSingleton {
     val client = OkHttpClient()
 }
 
+object AccountManager
 
-suspend fun login(username: String, password: String): LoginInfo? {
+// TODO: remove json log
+
+suspend fun AccountManager.login(username: String, password: String): LoginInfo? {
     return withContext(Dispatchers.IO) {
         val body = JSONObject()
         body.put("username", username)
@@ -41,12 +47,58 @@ suspend fun login(username: String, password: String): LoginInfo? {
     }
 }
 
-suspend fun signup(username: String, password: String): Boolean {
-    return false
+suspend fun AccountManager.auth(token: String): Boolean {
+    return withContext(Dispatchers.IO) {
+        val request = Request.Builder()
+            .url("http://47.108.27.238/api/auth")
+            .addHeader("Authorization", "Bearer $token")
+            .build()
+
+        val response = OkHttpSingleton.client.newCall(request).execute()
+        response.body?.let {
+            val json = it.string()
+            Log.d("Auth", json)
+            try {
+                val obj = JSONObject(json)
+                val code = obj["code"] as Int
+                code == 200
+            } catch (e: Exception) {
+                false
+            }
+        } ?: false
+    }
 }
 
-//捕获数据
-suspend fun fetchData(token: String): JSONObject? {
+suspend fun AccountManager.signup(username: String, password: String): LoginInfo? {
+    return withContext(Dispatchers.IO) {
+        val body = JSONObject()
+        body.put("username", username)
+        body.put("password", password)
+        val request = Request.Builder()
+            .url("http://47.108.27.238/api/signup")
+            .post(body.toString().toRequestBody("application/json".toMediaType()))
+            .build()
+
+        try {
+            val response = OkHttpSingleton.client.newCall(request).execute()
+            response.body?.let {
+                val json = it.string()
+                Log.d("network", "json: $json")
+                val obj = JSONObject(json)
+                if (obj["code"] != 200) {
+                    return@let null
+                }
+                val data = obj["data"] as JSONObject
+                LoginInfo(username, data["token"].toString())
+            }
+        } catch (e: Exception) {
+            Log.d(this.javaClass.name, "no data", e)
+            null
+        }
+    }
+}
+
+suspend fun AccountManager.fetchData(token: String): AccountDevices? {
     return withContext(Dispatchers.IO) {
         val request = Request.Builder()
             .url("http://47.108.27.238/api/my/device")
@@ -55,36 +107,16 @@ suspend fun fetchData(token: String): JSONObject? {
             .build()
 
         val response = OkHttpSingleton.client.newCall(request).execute()
-
-//        response.body?.let {
-//            val json = it.string()
-//            Log.d("fetchData", json)
-//            try {
-//                val obj = JSONObject(json)
-//                val data = obj["data"] as JSONObject
-//                data
-//            } catch (e: Exception) {
-//                Log.d("fetchData", "error", e)
-//                null
-//            }
-//        }
-
-        // 使用 use 函数自动关闭 response
-        return@withContext try {
-            response.use {
-                if (!response.isSuccessful) {
-                    Log.d("fetchData", "Request failed with code: ${response.code}")
-                    return@use null
-                }
-                val body = response.body?.string() ?: return@use null
-                Log.d("fetchData", body)
-                val obj = JSONObject(body)
-                val data = obj.getJSONObject("data")
-                data
+        response.body?.let {
+            val json = it.string()
+            try {
+                val resp = Json.decodeFromString<ApiResponse<AccountDevices>>(json)
+                Log.d("fetchData", json)
+                resp.data
+            } catch (e: Exception) {
+                Log.d("fetchData", "json syntaxException: ", e)
+                null
             }
-        } catch (e: Exception) {
-            Log.d("fetchData", "Error occurred", e)
-            null
         }
     }
 }
