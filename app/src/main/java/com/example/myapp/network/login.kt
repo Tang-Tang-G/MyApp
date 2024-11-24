@@ -1,9 +1,12 @@
 package com.example.myapp.network
 
 import android.util.Log
+import com.example.myapp.model.AccountDevices
+import com.example.myapp.model.ApiResponse
 import com.example.myapp.model.LoginInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -15,6 +18,8 @@ object OkHttpSingleton {
 }
 
 object AccountManager
+
+// TODO: remove json log
 
 suspend fun AccountManager.login(username: String, password: String): LoginInfo? {
     return withContext(Dispatchers.IO) {
@@ -94,7 +99,7 @@ suspend fun AccountManager.signup(username: String, password: String): LoginInfo
     }
 }
 
-suspend fun AccountManager.fetchData(token: String): JSONObject? {
+suspend fun AccountManager.fetchData(token: String): AccountDevices? {
     return withContext(Dispatchers.IO) {
         val request = Request.Builder()
             .url("http://47.108.27.238/api/my/device")
@@ -105,13 +110,12 @@ suspend fun AccountManager.fetchData(token: String): JSONObject? {
         val response = OkHttpSingleton.client.newCall(request).execute()
         response.body?.let {
             val json = it.string()
-            Log.d("fetchData", json)
             try {
-                val obj = JSONObject(json)
-                val data = obj["data"] as JSONObject
-                data
+                val resp = Json.decodeFromString<ApiResponse<AccountDevices>>(json)
+                Log.d("fetchData", json)
+                resp.data
             } catch (e: Exception) {
-                Log.d("fetchData", "error", e)
+                Log.d("fetchData", "json syntaxException: ", e)
                 null
             }
         }
