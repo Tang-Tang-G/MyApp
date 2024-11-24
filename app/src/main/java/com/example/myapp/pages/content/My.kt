@@ -10,37 +10,38 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapp.R
 import com.example.myapp.model.LoginViewModel
+import com.example.myapp.model.activityViewModel
 import com.example.myapp.screens.my.ChangePassword
 import com.example.myapp.screens.my.MyStartView
 import com.example.myapp.screens.my.UserInfo
 
 @Composable
-fun MyView(onLogout: () -> Unit = {}) {
-    val loginViewModel = LoginViewModel
+fun MyView(loginViewModel: LoginViewModel = activityViewModel(), onLogout: () -> Unit = {}) {
     val username by loginViewModel.username.observeAsState("Not Login")
     val loginNavController = rememberNavController()
     //nav
     val changePasswordNav = stringResource(R.string.change_password_navigate)
     val userInfoNav = stringResource(R.string.user_info_navigate)
     val myStartView = "MyStartView"
-        NavHost(
-            navController = loginNavController,
-            startDestination = myStartView
-        ) {
-            composable(myStartView) {
-                MyStartView(username = username,
-                    onLogout = onLogout,
-                    onUserInfoClick = {loginNavController.navigate(userInfoNav)},
-                    onChangePasswordClick = {loginNavController.navigate(changePasswordNav)}
-                )
-            }
-            composable(changePasswordNav) {
-                ChangePassword(loginNavController)
-            }
-            composable(userInfoNav) {
-                UserInfo(loginNavController)
-            }
+    NavHost(
+        navController = loginNavController,
+        startDestination = myStartView
+    ) {
+        composable(myStartView) {
+            MyStartView(
+                username = username,
+                onLogout = onLogout,
+                onUserInfoClick = { loginNavController.navigate(userInfoNav) },
+                onChangePasswordClick = { loginNavController.navigate(changePasswordNav) }
+            )
         }
+        composable(changePasswordNav) {
+            ChangePassword(loginNavController)
+        }
+        composable(userInfoNav) {
+            UserInfo(loginNavController)
+        }
+    }
 }
 
 @Preview
