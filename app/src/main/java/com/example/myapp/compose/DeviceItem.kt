@@ -2,126 +2,108 @@ package com.example.myapp.compose
 
 import com.example.myapp.R
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.myapp.database.Device
-import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.unit.sp
+import com.example.myapp.model.DeviceInfo
 
 @Composable
-fun DeviceItem(device: Device) {
+fun DeviceItem(device: DeviceInfo, open: Boolean) {
     var isSwitchOn by remember { mutableStateOf(false) }
-
-    Row(
-        modifier = Modifier
-            .padding(5.dp)
-            .fillMaxWidth()
-            .height(100.dp)
-    ) {
-        // 动态加载图片
-        val imageRes = when (device.type) {
-            "light" -> R.drawable.light
-            "fan" -> R.drawable.fan
-            else -> R.drawable.tv
-        }
-        Image(
-            painter = painterResource(id = imageRes),
-            contentDescription = "${device.type} 图标",
+    if (open) {
+        Row(
             modifier = Modifier
-                .width(100.dp)
-                .fillMaxHeight()
-        )
-        Column(
-            modifier = Modifier
-                .background(color = Color.White)
                 .fillMaxWidth()
                 .fillMaxHeight()
         ) {
-            Row {
-                Text(
-                    text = "设备名："
-                )
-                Text(
-                    text = device.name
-                )
+            // 动态加载图片
+            val imageRes = when (device.deviceType.typeName) {
+                "light" -> R.drawable.light
+                "fan" -> R.drawable.fan
+                "tv" -> R.drawable.tv
+                else -> R.drawable.ic_launcher_background
             }
-            Row {
-                Text(
-                    text = "设备类型："
-                )
-                Text(
-                    text = device.type
-                )
-            }
-            Row(
+            Image(
+                painter = painterResource(id = imageRes),
+                contentDescription = "${device.deviceType.typeName} 图标",
                 modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                    .width(64.dp)
+                    .fillMaxHeight()
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
             ) {
-                Text(text = "开/关")
-                Switch(
-                    checked = isSwitchOn,
-                    onCheckedChange = { isChecked ->
-                        isSwitchOn = isChecked
-                    }
-                )
-            }
+                Row {
+                    DeviceText(
+                        text = "设备名:"
+                    )
+                    DeviceText(
+                        text = device.deviceName,
+                    )
+                }
+                Row {
+                    DeviceText(
+                        text = "设备类型："
 
+                    )
+                    DeviceText(
+                        text = device.deviceType.typeName,
+
+                        )
+                }
+                Row {
+                    DeviceText(
+                        text = "模型名："
+
+                    )
+                    DeviceText(
+                        text = device.modelName,
+
+                        )
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    DeviceText(text = "开/关")
+                    Switch(
+                        checked = isSwitchOn,
+                        onCheckedChange = { isChecked ->
+                            isSwitchOn = isChecked
+                        },
+                        modifier = Modifier.scale(0.5f)
+                    )
+                }
+
+            }
         }
+    } else {
+        Text(
+            device.deviceName,
+            fontSize = 12.sp
+            )
     }
 }
 
-@Preview
 @Composable
-fun DeviceItemPreview() {
-    Surface(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        // 创建一个示例设备列表
-        val devices = listOf(
-            Device(100, "设备1", "light"),
-            Device(101, "设备2", "fan"),
-            Device(102, "设备3", "tv"),
-            Device(103, "设备4", "light"),
-            Device(104, "设备5", "fan"),
-            Device(105, "设备1", "light"),
-            Device(106, "设备2", "fan"),
-            Device(107, "设备3", "tv"),
-            Device(108, "设备4", "light"),
-            Device(109, "设备5", "fan"),
-            Device(110, "设备1", "light"),
-            Device(111, "设备2", "fan"),
-            Device(112, "设备3", "tv"),
-            Device(113, "设备4", "light"),
-            Device(114, "设备5", "fan"),
-            Device(109, "设备5", "fan"),
-            Device(110, "设备1", "light"),
-            Device(111, "设备2", "fan"),
-            Device(112, "设备3", "tv"),
-            Device(113, "设备4", "light"),
-            Device(114, "设备5", "fan")
-        )
-
-        // 使用 LazyColumn 显示设备列表
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(devices) { device ->
-                DeviceItem(device = device)
-            }
-        }
-
-    }
-
+fun DeviceText(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.titleSmall,
+        color = MaterialTheme.colorScheme.secondary,
+        fontSize = 12.sp
+    )
 }
+

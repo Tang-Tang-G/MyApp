@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.myapp.compose.DeviceItem
 import com.example.myapp.compose.ExpandableNestedCards
 import com.example.myapp.compose.composable
 import com.example.myapp.model.AccountDevices
@@ -92,19 +93,9 @@ fun OverView() {
                                         Column(
                                             modifier = Modifier
                                                 .fillMaxWidth()
-                                                .padding(16.dp)
+                                                .padding(10.dp)
                                         ) {
-                                            Text(
-                                                text = device.deviceName,
-                                                style = MaterialTheme.typography.titleSmall,
-                                                color = MaterialTheme.colorScheme.secondary,
-                                            )
-                                            if (open) {
-                                                Spacer(modifier = Modifier.height(8.dp))
-
-                                                // details
-                                                Text(text = device.modelName)
-                                            }
+                                            DeviceItem(device,open)
                                         }
                                     }
                                 }
