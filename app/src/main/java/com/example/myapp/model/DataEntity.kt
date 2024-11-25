@@ -59,3 +59,12 @@ data class AccountDevices(
 
 @Serializable
 data class ApiResponse<T>(val code: Int, val message: String, val timestamp: Int, val data: T)
+
+
+@Serializable
+data class UserInfo(
+    val name: String,
+    val age: Int,
+    val email: String,
+    val gender :String
+)

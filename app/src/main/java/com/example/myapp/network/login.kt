@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.myapp.model.AccountDevices
 import com.example.myapp.model.ApiResponse
 import com.example.myapp.model.LoginInfo
+import com.example.myapp.model.UserInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
@@ -112,9 +113,40 @@ suspend fun AccountManager.fetchData(token: String): AccountDevices? {
             try {
                 val resp = Json.decodeFromString<ApiResponse<AccountDevices>>(json)
                 Log.d("fetchData", json)
-                resp.data
+                if (resp.code == 200) {
+                    resp.data
+                } else {
+                    null
+                }
             } catch (e: Exception) {
                 Log.d("fetchData", "json syntaxException: ", e)
+                null
+            }
+        }
+    }
+}
+
+suspend fun AccountManager.fetchUserInfo(token: String): UserInfo? {
+    return withContext(Dispatchers.IO) {
+        val request = Request.Builder()
+            .url("http://47.108.27.238/api/userinfo")
+            .get()
+            .addHeader("Authorization", "Bearer $token")
+            .build()
+
+        val response = OkHttpSingleton.client.newCall(request).execute()
+        response.body?.let {
+            val json = it.string()
+            Log.d("fetchUserInfo", json)
+            try {
+                val resp = Json.decodeFromString<ApiResponse<UserInfo>>(json)
+                if (resp.code == 200) {
+                    resp.data
+                } else {
+                    null
+                }
+            } catch (e: Exception) {
+                Log.d("fetchUserInfo", "json syntaxException: ", e)
                 null
             }
         }
