@@ -137,14 +137,11 @@ suspend fun AccountManager.fetchUserInfo(token: String): UserInfo? {
         val response = OkHttpSingleton.client.newCall(request).execute()
         response.body?.let {
             val json = it.string()
-            Log.d("fetchUserInfo", json)
+
             try {
                 val resp = Json.decodeFromString<ApiResponse<UserInfo>>(json)
-                if (resp.code == 200) {
+                Log.d("fetchUserInfo", json)
                     resp.data
-                } else {
-                    null
-                }
             } catch (e: Exception) {
                 Log.d("fetchUserInfo", "json syntaxException: ", e)
                 null

@@ -13,7 +13,7 @@ import com.example.myapp.model.LoginViewModel
 import com.example.myapp.model.activityViewModel
 import com.example.myapp.screens.my.ChangePassword
 import com.example.myapp.screens.my.MyStartView
-import com.example.myapp.screens.my.UserInfo
+import com.example.myapp.screens.my.UserInfoPage
 
 @Composable
 fun MyView(loginViewModel: LoginViewModel = activityViewModel(), onLogout: () -> Unit = {}) {
@@ -39,7 +39,7 @@ fun MyView(loginViewModel: LoginViewModel = activityViewModel(), onLogout: () ->
             ChangePassword(loginNavController)
         }
         composable(userInfoNav) {
-            UserInfo(loginNavController)
+            UserInfoPage(loginNavController)
         }
     }
 }
