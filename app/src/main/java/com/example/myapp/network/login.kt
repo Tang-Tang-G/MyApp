@@ -13,6 +13,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
+import kotlinx.serialization.encodeToString
 
 object OkHttpSingleton {
     val client = OkHttpClient()
@@ -137,7 +138,6 @@ suspend fun AccountManager.fetchUserInfo(token: String): UserInfo? {
         val response = OkHttpSingleton.client.newCall(request).execute()
         response.body?.let {
             val json = it.string()
-
             try {
                 val resp = Json.decodeFromString<ApiResponse<UserInfo>>(json)
                 Log.d("fetchUserInfo", json)
@@ -146,6 +146,32 @@ suspend fun AccountManager.fetchUserInfo(token: String): UserInfo? {
                 Log.d("fetchUserInfo", "json syntaxException: ", e)
                 null
             }
+        }
+    }
+}
+
+
+suspend fun AccountManager.updateUserInfo(token: String, userInfo: UserInfo): Boolean {
+    return withContext(Dispatchers.IO) {
+        val jsonUserInfo = Json.encodeToString(userInfo)
+        val body = jsonUserInfo.toRequestBody("application/json".toMediaType())
+        val request = Request.Builder()
+            .url("http://47.108.27.238/api/userinfo")
+            .post(body)
+            .addHeader("Authorization", "Bearer $token")
+            .build()
+
+        try {
+            val response = OkHttpSingleton.client.newCall(request).execute()
+            response.body?.let {
+                val json = it.string()
+                Log.d("updateUserInfo", json)
+                val obj = JSONObject(json)
+                obj.getInt("code") == 200
+            } == true
+        } catch (e: Exception) {
+            Log.d(this.javaClass.name, "updateUserInfo failed", e)
+            false
         }
     }
 }

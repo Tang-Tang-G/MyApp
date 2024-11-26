@@ -1,6 +1,5 @@
 package com.example.myapp.model
 
-import android.R
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
@@ -63,4 +62,3 @@ data class ApiResponse<T>(val code: Int, val message: String, val timestamp: Int
 
 @Serializable
 data class UserInfo(val name: String, val age: Int, val email: String, val gender :String,val city: String)
-data class MutableUserInfo(var name: String, var gender: String, var age: Int, var city: String, var email: String)

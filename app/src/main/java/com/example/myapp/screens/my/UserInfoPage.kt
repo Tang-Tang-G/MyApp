@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -13,8 +14,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -23,12 +22,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.compose.foundation.lazy.LazyColumn
 import com.example.myapp.compose.TopBarWithBack
-import com.example.myapp.model.MutableUserInfo
 import com.example.myapp.model.SessionManager
 import com.example.myapp.network.AccountManager
 import com.example.myapp.model.UserInfo
 import com.example.myapp.network.fetchUserInfo
+import com.example.myapp.network.updateUserInfo
 import kotlinx.coroutines.launch
 
 @Composable
@@ -37,7 +37,7 @@ fun UserInfoPage(navController: NavController) {
     val scope = rememberCoroutineScope()
     val userInfoState = remember { mutableStateOf<UserInfo?>(null) }
     val isEditing = remember { mutableStateOf(false) }
-    val mutableUserInfo = remember { mutableStateOf(MutableUserInfo("", "", 0, "", "")) }
+    val mutableUserInfo = remember { mutableStateOf(UserInfo("", 0, "", "", "")) }
 
     Surface(
         modifier = Modifier.fillMaxSize()
@@ -58,12 +58,13 @@ fun UserInfoPage(navController: NavController) {
                         val userinfo = AccountManager.fetchUserInfo(token)
                         userInfoState.value = userinfo
                         if (userinfo != null) {
-                            mutableUserInfo.value = MutableUserInfo(
+                            mutableUserInfo.value = UserInfo(
                                 userinfo.name,
-                                userinfo.gender,
                                 userinfo.age,
+                                userinfo.email,
+                                userinfo.gender,
                                 userinfo.city,
-                                userinfo.email
+
                             )
                         }
                     }
@@ -104,51 +105,129 @@ fun UserInfoPage(navController: NavController) {
                     Text(text = "编辑")
                 }
             } else {
-                EditUserInfoForm(mutableUserInfo = mutableUserInfo,
+                EditUserInfoForm(
+                    mutableUserInfo = mutableUserInfo,
                     onDone = { updatedUserInfo ->
-                        userInfoState.value = UserInfo(
-                            name = updatedUserInfo.name,
-                            gender = updatedUserInfo.gender,
-                            age = updatedUserInfo.age,
-                            city = updatedUserInfo.city,
-                            email = updatedUserInfo.email
-                        )
+                        val originalUserInfo = userInfoState.value
+                        if ((originalUserInfo != null) &&
+                            (originalUserInfo.name != updatedUserInfo.name ||
+                            originalUserInfo.gender != updatedUserInfo.gender ||
+                            originalUserInfo.age != updatedUserInfo.age ||
+                            originalUserInfo.city != updatedUserInfo.city ||
+                            originalUserInfo.email != updatedUserInfo.email)) {
+                            val token = SessionManager.getToken(context)
+                            token?.let {
+                                scope.launch {
+                                    val isUpdated = AccountManager.updateUserInfo(it, updatedUserInfo)
+                                    if (isUpdated) {
+                                        userInfoState.value = updatedUserInfo // 更新 UI
+                                        isEditing.value = false
+                                    } else {
+                                        // 处理更新失败的情况
+
+                                    }
+                                }
+                            }
+                        } else {
+                            // 如果没有变化，不需要提交
+                            isEditing.value = false
+                        }
+                    },
+                    onCancel = {
                         isEditing.value = false
-                    })
+                        userInfoState.value?.let {
+                            mutableUserInfo.value = UserInfo(
+                                it.name,
+                                it.age,
+                                it.email,
+                                it.gender,
+                                it.city
+                            )
+                        }
+                    }
+                )
             }
         }
     }
 }
 
+
 @Composable
 fun EditUserInfoForm(
-    mutableUserInfo: MutableState<MutableUserInfo>,
-    onDone: (MutableUserInfo) -> Unit
+    mutableUserInfo: MutableState<UserInfo>,
+    onDone: (UserInfo) -> Unit,
+    onCancel: () -> Unit
 ) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.Start
+    Surface(
+        modifier = Modifier.fillMaxSize()
     ) {
-        TextField(value = mutableUserInfo.value.age.toString(),
-            onValueChange = { mutableUserInfo.value = mutableUserInfo.value.copy(age = it.toInt()) })
-        TextField(
-            value = mutableUserInfo.value.gender,
-            onValueChange = { mutableUserInfo.value = mutableUserInfo.value.copy(gender = it) })
-        TextField(
-            value = mutableUserInfo.value.city,
-            onValueChange = { mutableUserInfo.value = mutableUserInfo.value.copy(city = it) })
-        TextField(
-            value = mutableUserInfo.value.email,
-            onValueChange = { mutableUserInfo.value = mutableUserInfo.value.copy(email = it) })
-        Row(
-            modifier = Modifier.fillMaxWidth(), // 让 Row 填满父组件的宽度
-            horizontalArrangement = spacedBy(16.dp)
+        Column(
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()
         ) {
-            Button(onClick = { onDone(mutableUserInfo.value) }) {
-                Text(text = "保存")
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(horizontal = 16.dp)
+            ) {
+                item {
+                    TextField(
+                        value = mutableUserInfo.value.name,
+                        onValueChange = { mutableUserInfo.value = mutableUserInfo.value.copy(name = it) },
+                        label = { Text("姓名") }
+                    )
+                }
+                item {
+                    TextField(
+                        value = mutableUserInfo.value.gender,
+                        onValueChange = { mutableUserInfo.value = mutableUserInfo.value.copy(gender = it) },
+                        label = { Text("性别") }
+                    )
+                }
+                item {
+                    TextField(
+                        value = mutableUserInfo.value.age.toString(),
+                        onValueChange = {
+                            val age = it.toIntOrNull()
+                            if (age != null) {
+                                mutableUserInfo.value = mutableUserInfo.value.copy(age = age)
+                            }
+                        },
+                        label = { Text("年龄") }
+                    )
+                }
+                item {
+                    TextField(
+                        value = mutableUserInfo.value.city,
+                        onValueChange = { mutableUserInfo.value = mutableUserInfo.value.copy(city = it) },
+                        label = { Text("城市") }
+                    )
+                }
+                item {
+                    TextField(
+                        value = mutableUserInfo.value.email,
+                        onValueChange = { mutableUserInfo.value = mutableUserInfo.value.copy(email = it) },
+                        label = { Text("邮箱") }
+                    )
+                }
             }
-            Button(onClick = { onDone(mutableUserInfo.value) }) {
-                Text(text = "取消")
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = spacedBy(60.dp, Alignment.CenterHorizontally)
+            ) {
+                Button(onClick = { onDone(mutableUserInfo.value) }) {
+                    Text(text = "保存")
+                }
+                Button(onClick = { onCancel() }) {
+                    Text(text = "取消")
+                }
             }
         }
     }
