@@ -58,4 +58,4 @@ data class AccountDevices(
 )
 
 @Serializable
-data class ApiResponse<T>(val code: Int, val message: String, val timestamp: Int, val data: T)
+data class ApiResponse<T>(val code: Int, val message: String, val timestamp: Int, val data: T? = null)
