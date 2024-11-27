@@ -111,13 +111,13 @@ fun Login(
                     if (checked) {
                         scope.launch {
                             // username and password get from the remember value
-                            val loginInfo = AccountManager.login(username, password)
-                            if (loginInfo != null) {
-                                loginViewModel.setLoginInfo(username, loginInfo.token)
+                            val jwt = AccountManager.login(username, password)
+                            if (jwt != null) {
+                                loginViewModel.setLoginInfo(username, jwt.token)
                                 SessionManager.saveSession(
                                     context,
-                                    loginInfo.username,
-                                    loginInfo.token
+                                    username,
+                                    jwt.token
                                 )
                                 val job = launch {
                                     snackbarHostState.showSnackbar(
@@ -127,6 +127,7 @@ fun Login(
                                 }
                                 delay(500)
                                 job.cancel()
+                                delay(500)
                                 navigateToContent()
                             } else {
                                 snackbarHostState.showSnackbar("登入出错")
