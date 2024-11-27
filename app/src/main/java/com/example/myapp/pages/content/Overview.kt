@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.myapp.compose.DeviceControl
 import com.example.myapp.compose.ExpandableNestedCards
 import com.example.myapp.compose.composable
 import com.example.myapp.model.AccountDevices
@@ -103,7 +104,8 @@ fun OverView() {
                                                 Spacer(modifier = Modifier.height(8.dp))
 
                                                 // details
-                                                Text(text = device.modelName)
+//                                                Text(text = device.modelName)
+                                                DeviceControl(device.service)
                                             }
                                         }
                                     }
