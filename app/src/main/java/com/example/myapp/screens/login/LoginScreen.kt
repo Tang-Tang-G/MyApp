@@ -37,7 +37,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapp.R
@@ -47,7 +46,6 @@ import com.example.myapp.model.SessionManager
 import com.example.myapp.model.activityViewModel
 import com.example.myapp.network.AccountManager
 import com.example.myapp.network.login
-import com.example.myapp.ui.theme.MyAppTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -56,9 +54,8 @@ fun Login(
     navigateToContent: () -> Unit = {},
     navigateToSignup: () -> Unit = {},
     navigateToForgetPassword: () -> Unit = {},
+    loginViewModel: LoginViewModel = activityViewModel()
 ) {
-    val loginViewModel: LoginViewModel = activityViewModel()
-
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var checked by remember { mutableStateOf(false) }
@@ -180,13 +177,5 @@ fun Login(
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LoginPreview() {
-    MyAppTheme {
-        Login()
     }
 }
