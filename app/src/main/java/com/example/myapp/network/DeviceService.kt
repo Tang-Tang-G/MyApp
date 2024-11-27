@@ -12,7 +12,6 @@ import okhttp3.RequestBody.Companion.toRequestBody
 const val DeviceServiceUrl = "http://47.108.27.238/api/my/device"
 
 suspend fun executeDeviceService(
-    token: String,
     deviceId: Int,
     serviceName: String,
     method: String,
@@ -28,14 +27,13 @@ suspend fun executeDeviceService(
 
         val request = Request.Builder()
             .url(url)
-            .addHeader("Authorization", "Bearer $token")
             .method(
                 method.uppercase(),
-                body?.toRequestBody(null)
+                body?.toRequestBody(contentType?.toMediaTypeOrNull())
             )
-            .addHeader("Content-Type", contentType ?: "")
             .build()
-        val response = OkHttpSingleton.client.newCall(request).execute()
+
+        val response = okhttp.newCall(request).execute()
         response.body?.let {
             val data = it.string()
             Log.d("Response", data)
