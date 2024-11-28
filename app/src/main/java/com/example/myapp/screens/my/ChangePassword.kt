@@ -9,25 +9,89 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.myapp.compose.TopBarWithBack
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 
 @Composable
 fun ChangePassword(navController: NavController) {
+    // 状态保存文本框中的输入值
+    val oldPassword = remember { mutableStateOf("") }
+    val newPassword = remember { mutableStateOf("") }
+    val confirmPassword = remember { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
+
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
         Column(
-            // 内容从上到下排布
             verticalArrangement = Arrangement.Top,
-            // 水平上居中
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().padding(16.dp)
         ) {
             TopBarWithBack(
                 title = "修改密码",
                 goBack = { navController.popBackStack() }
+
             )
+            TextField(
+                value = oldPassword.value,
+                onValueChange = { oldPassword.value = it },
+                label = { Text("原密码") },
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done,
+                    keyboardType = KeyboardType.Password
+                )
+            )
+            TextField(
+                value = newPassword.value,
+                onValueChange = { newPassword.value = it },
+                label = { Text("新密码") },
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done,
+                    keyboardType = KeyboardType.Password
+                )
+            )
+            TextField(
+                value = confirmPassword.value,
+                onValueChange = { confirmPassword.value = it },
+                label = { Text("确认新密码") },
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done,
+                    keyboardType = KeyboardType.Password
+                )
+            )
+            Button(onClick = {
+                if(newPassword.value == oldPassword.value)
+                {
+                    //snatcker
+                }
+                else if (newPassword.value == confirmPassword.value ) {
+                    // 密码匹配，进行密码修改请求
+
+                } else {
+                    // 如果密码不匹配，显示提示
+
+                }
+            }) {
+                Text(text = "提交")
+            }
         }
     }
-
-
 }
