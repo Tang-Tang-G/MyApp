@@ -72,6 +72,5 @@ data class AccountRequest(val username: String, val password: String)
 @Serializable
 data class Jwt(val token: String)
 
-
 @Serializable
 data class ApiResponse<T>(val code: Int, val message: String, val timestamp: Int, val data: T? = null)
