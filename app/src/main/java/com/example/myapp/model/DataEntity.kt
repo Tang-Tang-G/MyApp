@@ -58,7 +58,19 @@ data class AccountDevices(
 )
 
 @Serializable
-data class ApiResponse<T>(val code: Int, val message: String, val timestamp: Int, val data: T)
+data class UserInfo(
+    val email: String?,
+    val gender: String?,
+    val age: Int?,
+    val city: String?,
+    val name: String?,
+)
 
 @Serializable
-data class UserInfo(val name: String, val age: Int, val email: String, val gender :String,val city: String)
+data class AccountRequest(val username: String, val password: String)
+
+@Serializable
+data class Jwt(val token: String)
+
+@Serializable
+data class ApiResponse<T>(val code: Int, val message: String, val timestamp: Int, val data: T? = null)

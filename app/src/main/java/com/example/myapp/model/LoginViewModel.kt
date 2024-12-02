@@ -17,7 +17,6 @@ inline fun <reified T : ViewModel> activityViewModel(): T {
     return ViewModelProvider(activity)[T::class.java]
 }
 
-data class LoginInfo(val username: String, val token: String)
 
 class LoginViewModel : ViewModel() {
     private val _token = MutableLiveData<String>()
@@ -25,6 +24,10 @@ class LoginViewModel : ViewModel() {
 
     private val _username = MutableLiveData<String>()
     val username: LiveData<String> = _username
+
+    fun updateToken(token: String) {
+        _token.value = token
+    }
 
     fun setLoginInfo(username: String, token: String) {
         Log.d("viewmodel", "save $username, $token")

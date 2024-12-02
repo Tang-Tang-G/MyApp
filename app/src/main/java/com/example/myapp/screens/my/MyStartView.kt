@@ -1,5 +1,6 @@
 package com.example.myapp.screens.my
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -7,9 +8,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.myapp.compose.OptionalBar
 import com.example.myapp.model.SessionManager
 
 @Composable
@@ -55,30 +58,67 @@ fun MyStartView(
                 )
             }
 
-            OptionalBar(
-                text = "个人信息",
-                onclick = onUserInfoClick
+            ListItem(
+                headlineContent = { Text("个人信息") },
+                trailingContent = {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null
+                    )
+                },
+                modifier = Modifier.clickable { onUserInfoClick() }
             )
-            OptionalBar(
-                text = "修改密码",
-                onclick = onChangePasswordClick
+            HorizontalDivider()
+            ListItem(
+                headlineContent = { Text("修改密码") },
+                trailingContent = {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null
+                    )
+                },
+                modifier = Modifier.clickable { onChangePasswordClick() },
             )
-            OptionalBar(
-                text = "联系客服",
-                onclick = {
-                }
+            HorizontalDivider()
+            ListItem(
+                headlineContent = { Text("联系客服") },
+                trailingContent = {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null
+                    )
+                },
+                modifier = Modifier.clickable { },
             )
-            OptionalBar(
-                text = "隐私政策",
+            HorizontalDivider()
+            ListItem(
+                headlineContent = { Text("隐私政策") },
+                trailingContent = {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null
+                    )
+                },
+                modifier = Modifier.clickable { },
             )
-            OptionalBar(
-                text = "关于App",
+            HorizontalDivider()
+            ListItem(
+                headlineContent = { Text("关于App") },
+                trailingContent = {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null
+                    )
+                },
+                modifier = Modifier.clickable { },
             )
+
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
             )
+
             Button(
                 onClick = {
                     //点击以后退出登录
