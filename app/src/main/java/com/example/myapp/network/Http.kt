@@ -13,7 +13,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.PATCH
 import retrofit2.http.POST
 import java.io.IOException
 
@@ -33,8 +32,9 @@ interface Tapi {
     @GET("userinfo")
     suspend fun getUserInfo(): ApiResponse<UserInfo>
 
-    @PATCH("userinfo")
-    suspend fun updateUserInfo(@Body userinfo: UserInfo): ApiResponse<UserInfo>
+    // TODO: change to patch
+    @POST("userinfo")
+    suspend fun updateUserInfo(@Body userinfo: UserInfo): ApiResponse<Unit>
 
     @POST("userinfo")
     suspend fun newUserInfo(@Body userinfo: UserInfo): ApiResponse<UserInfo>
