@@ -1,23 +1,23 @@
 package com.example.myapp.compose
 
-import com.example.myapp.R
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Switch
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.sp
+import com.example.myapp.R
 import com.example.myapp.model.DeviceInfo
 
 @Composable
 fun DeviceItem(device: DeviceInfo, open: Boolean) {
-    var isSwitchOn by remember { mutableStateOf(false) }
     if (open) {
         Row(
             modifier = Modifier
@@ -29,7 +29,7 @@ fun DeviceItem(device: DeviceInfo, open: Boolean) {
                 "light" -> R.drawable.light
                 "fan" -> R.drawable.fan
                 "tv" -> R.drawable.tv
-                else -> R.drawable.ic_launcher_background
+                else -> R.drawable.ic_launcher_background // TODO: change this picture
             }
             Image(
                 painter = painterResource(id = imageRes),
@@ -71,22 +71,7 @@ fun DeviceItem(device: DeviceInfo, open: Boolean) {
 
                         )
                 }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    DeviceText(text = "开/关")
-                    Switch(
-                        checked = isSwitchOn,
-                        onCheckedChange = { isChecked ->
-                            isSwitchOn = isChecked
-                        },
-                        modifier = Modifier.scale(0.5f)
-                    )
-                }
-
+                DeviceControl(device.service)
             }
         }
     } else {
