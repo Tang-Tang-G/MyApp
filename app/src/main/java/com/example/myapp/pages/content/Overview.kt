@@ -2,8 +2,10 @@ package com.example.myapp.pages.content
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.myapp.compose.DeviceControl
 import com.example.myapp.compose.DeviceItem
 import com.example.myapp.compose.ExpandableNestedCards
 import com.example.myapp.compose.composable
@@ -91,9 +94,21 @@ fun OverView() {
                                         Column(
                                             modifier = Modifier
                                                 .fillMaxWidth()
-                                                .padding(10.dp)
+                                                .padding(16.dp)
                                         ) {
-                                            DeviceItem(device,open)
+                                            Text(
+                                                text = device.deviceName,
+                                                style = MaterialTheme.typography.titleSmall,
+                                                color = MaterialTheme.colorScheme.secondary,
+                                            )
+                                            if (open) {
+                                                Spacer(modifier = Modifier.height(8.dp))
+
+                                                // details
+//                                                Text(text = device.modelName)
+                                                DeviceControl(device.service)
+                                                DeviceItem(device,open)
+                                            }
                                         }
                                     }
                                 }

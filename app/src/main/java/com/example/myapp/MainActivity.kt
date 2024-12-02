@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -35,8 +34,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            InitModel()
             MyAppTheme {
+                InitModel()
                 MainView()
             }
         }
@@ -51,7 +50,6 @@ fun NavController.navigateTo(route: String) {
 }
 
 
-@Preview(showBackground = true)
 @Composable
 fun MainView() {
     val navController = rememberNavController()
@@ -108,7 +106,7 @@ fun MainView() {
                 },
                 navigateToForgetPassword = {
                     navController.navigate(forgetPasswordNav)
-                }
+                },
             )
         }
         composable(contentNav) {

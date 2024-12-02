@@ -1,9 +1,11 @@
 package com.example.myapp.compose
 
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,18 +18,31 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.myapp.model.AccountDevices
+import com.example.myapp.model.LoginViewModel
+import com.example.myapp.model.activityViewModel
+import com.example.myapp.network.executeDeviceService
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 
 @Composable
@@ -243,6 +258,92 @@ fun SubCard(
                 Spacer(modifier = Modifier.height(8.dp))
                 content()
             }
+        }
+    }
+}
+
+@Composable
+fun DeviceControl(services: List<JsonObject>) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        services.forEach { item ->
+            ControlCompose(4, item.jsonObject)
+        }
+    }
+}
+
+
+@Composable
+fun ControlCompose(deviceId: Int, service: JsonObject) {
+    val type = service["type"]!!.jsonPrimitive.content
+    val label = service["label"]!!.jsonPrimitive.content
+    val callback = service["callback"]!!.jsonObject
+    val loginViewModel = activityViewModel<LoginViewModel>()
+    val token by loginViewModel.token.observeAsState("")
+    val scope = rememberCoroutineScope()
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Text(
+            text = label,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.weight(2f),
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.titleMedium
+        )
+        when (type) {
+            "boolean" -> {
+                val onOpen = callback["onOpen"]!!.jsonObject
+                val onClose = callback["onClose"]!!.jsonObject
+
+                var open by remember { mutableStateOf(false) }
+                Switch(
+                    checked = open,
+                    modifier = Modifier.weight(3f),
+                    onCheckedChange = {
+                        open = it
+                        Log.d("Switch", "switched")
+                        scope.launch {
+                            executeDeviceService(
+                                deviceId = deviceId,
+                                serviceName = (if (it) onOpen else onClose)["service_name"]!!.jsonPrimitive.content,
+                                method = (if (it) onOpen else onClose)["method"]!!.jsonPrimitive.content,
+                                body = null,
+                                contentType = null
+                            )
+                        }
+                    },
+                )
+            }
+
+            "range" -> {
+                val onUpdate = callback["onUpdate"]!!.jsonObject
+
+                var value by remember { mutableFloatStateOf(0.0f) }
+                Slider(
+                    value = value,
+                    onValueChange = { value = it },
+                    modifier = Modifier.weight(weight = 3f),
+                    onValueChangeFinished = {
+                        scope.launch {
+                            executeDeviceService(
+                                deviceId = deviceId,
+                                serviceName = onUpdate["service_name"]!!.jsonPrimitive.content,
+                                method = onUpdate["method"]!!.jsonPrimitive.content,
+                                contentType = onUpdate["content_type"]!!.jsonPrimitive.content,
+                                body = (value * 100).toInt().toString(),
+                            )
+                        }
+                    }
+                )
+            }
+
+            else -> {}
         }
     }
 }

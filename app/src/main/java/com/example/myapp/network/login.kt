@@ -1,3 +1,4 @@
+
 package com.example.myapp.network
 
 import android.util.Log
@@ -21,7 +22,6 @@ object OkHttpSingleton {
 
 object AccountManager
 
-// TODO: remove json log
 
 suspend fun AccountManager.login(username: String, password: String): LoginInfo? {
     return withContext(Dispatchers.IO) {
@@ -55,7 +55,6 @@ suspend fun AccountManager.auth(token: String): Boolean {
             .url("http://47.108.27.238/api/auth")
             .addHeader("Authorization", "Bearer $token")
             .build()
-
         val response = OkHttpSingleton.client.newCall(request).execute()
         response.body?.let {
             val json = it.string()

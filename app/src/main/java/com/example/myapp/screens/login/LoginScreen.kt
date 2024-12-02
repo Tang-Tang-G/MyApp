@@ -37,7 +37,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapp.R
@@ -47,7 +46,6 @@ import com.example.myapp.model.SessionManager
 import com.example.myapp.model.activityViewModel
 import com.example.myapp.network.AccountManager
 import com.example.myapp.network.login
-import com.example.myapp.ui.theme.MyAppTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -56,9 +54,8 @@ fun Login(
     navigateToContent: () -> Unit = {},
     navigateToSignup: () -> Unit = {},
     navigateToForgetPassword: () -> Unit = {},
+    loginViewModel: LoginViewModel = activityViewModel()
 ) {
-    val loginViewModel: LoginViewModel = activityViewModel()
-
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var checked by remember { mutableStateOf(false) }
@@ -114,13 +111,13 @@ fun Login(
                     if (checked) {
                         scope.launch {
                             // username and password get from the remember value
-                            val loginInfo = AccountManager.login(username, password)
-                            if (loginInfo != null) {
-                                loginViewModel.setLoginInfo(username, loginInfo.token)
+                            val jwt = AccountManager.login(username, password)
+                            if (jwt != null) {
+                                loginViewModel.setLoginInfo(username, jwt.token)
                                 SessionManager.saveSession(
                                     context,
-                                    loginInfo.username,
-                                    loginInfo.token
+                                    username,
+                                    jwt.token
                                 )
                                 val job = launch {
                                     snackbarHostState.showSnackbar(
@@ -130,6 +127,7 @@ fun Login(
                                 }
                                 delay(500)
                                 job.cancel()
+                                delay(500)
                                 navigateToContent()
                             } else {
                                 snackbarHostState.showSnackbar("登入出错")
@@ -180,13 +178,5 @@ fun Login(
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LoginPreview() {
-    MyAppTheme {
-        Login()
     }
 }
