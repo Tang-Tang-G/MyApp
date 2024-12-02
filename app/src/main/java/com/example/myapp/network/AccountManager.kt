@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.myapp.model.AccountDevices
 import com.example.myapp.model.AccountRequest
 import com.example.myapp.model.Jwt
+import com.example.myapp.model.UserInfo
 
 object AccountManager {
     var token: String? = null
@@ -42,7 +43,7 @@ suspend fun AccountManager.signup(username: String, password: String): Boolean {
     }
 }
 
-suspend fun AccountManager.fetchData(token: String): AccountDevices? {
+suspend fun AccountManager.fetchData(): AccountDevices? {
     try {
         val response = apiWithToken.getAllAccountDevices()
         if (response.code != 200) {
@@ -52,5 +53,34 @@ suspend fun AccountManager.fetchData(token: String): AccountDevices? {
     } catch (e: Exception) {
         Log.e("Fetch Data", e.message, e)
         return null
+    }
+}
+
+suspend fun AccountManager.fetchUserInfo(): UserInfo? {
+    try {
+        val response = apiWithToken.getUserInfo()
+        if (response.code == 200) {
+            return response.data
+        }
+        Log.e("fetchUserInfo", response.message)
+        return null
+    } catch (e: Exception) {
+        Log.e("fetchUserInfo", e.message, e)
+        return null
+    }
+}
+
+
+suspend fun AccountManager.updateUserInfo(userInfo: UserInfo): Boolean {
+    try {
+        val response = apiWithToken.updateUserInfo(userInfo)
+        if (response.code == 200) {
+            return true
+        }
+        Log.e("updateUserInfo", response.message)
+        return false
+    } catch (e: Exception) {
+        Log.e("updateUserInfo", e.message, e)
+        return false
     }
 }
