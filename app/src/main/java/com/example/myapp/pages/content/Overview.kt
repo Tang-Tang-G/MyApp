@@ -23,14 +23,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.myapp.compose.DeviceControl
 import com.example.myapp.compose.DeviceItem
 import com.example.myapp.compose.ExpandableNestedCards
 import com.example.myapp.compose.composable
 import com.example.myapp.model.AccountDevices
-import com.example.myapp.model.SessionManager
 import com.example.myapp.network.AccountManager
 import com.example.myapp.network.fetchData
 import kotlinx.coroutines.launch
@@ -42,17 +39,13 @@ fun OverView() {
         modifier = Modifier.fillMaxSize()
     ) {
         val scope = rememberCoroutineScope()
-        val context = LocalContext.current
 
         // TODO: make the device store locally
         var deviceList by remember { mutableStateOf<AccountDevices?>(null) }
         LaunchedEffect(Unit) {
             scope.launch {
-                val token = SessionManager.getToken(context)
-                if (token != null) {
-                    val devices = AccountManager.fetchData(token)
-                    deviceList = devices
-                }
+                val devices = AccountManager.fetchData()
+                deviceList = devices
             }
         }
 
@@ -103,11 +96,7 @@ fun OverView() {
                                             )
                                             if (open) {
                                                 Spacer(modifier = Modifier.height(8.dp))
-
-                                                // details
-//                                                Text(text = device.modelName)
-                                                DeviceControl(device.service)
-                                                DeviceItem(device,open)
+                                                DeviceItem(device, open)
                                             }
                                         }
                                     }
