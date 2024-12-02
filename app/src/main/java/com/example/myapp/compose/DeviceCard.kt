@@ -23,7 +23,6 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,8 +35,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.myapp.model.AccountDevices
-import com.example.myapp.model.LoginViewModel
-import com.example.myapp.model.activityViewModel
 import com.example.myapp.network.executeDeviceService
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonObject
@@ -281,8 +278,6 @@ fun ControlCompose(deviceId: Int, service: JsonObject) {
     val type = service["type"]!!.jsonPrimitive.content
     val label = service["label"]!!.jsonPrimitive.content
     val callback = service["callback"]!!.jsonObject
-    val loginViewModel = activityViewModel<LoginViewModel>()
-    val token by loginViewModel.token.observeAsState("")
     val scope = rememberCoroutineScope()
 
     Row(
