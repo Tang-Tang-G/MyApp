@@ -3,7 +3,9 @@ package com.example.myapp.network
 import android.util.Log
 import com.example.myapp.model.AccountDevices
 import com.example.myapp.model.AccountRequest
+import com.example.myapp.model.AreaInfo
 import com.example.myapp.model.Jwt
+import com.example.myapp.model.Member
 import com.example.myapp.model.UserInfo
 
 object AccountManager {
@@ -82,5 +84,34 @@ suspend fun AccountManager.updateUserInfo(userInfo: UserInfo): Boolean {
     } catch (e: Exception) {
         Log.e("updateUserInfo", e.message, e)
         return false
+    }
+}
+
+suspend fun AccountManager.fetchMemberInfo(): Member? {
+    try {
+        val response = apiWithToken.getMemberInfo()
+        if (response.code == 200) {
+            return response.data
+        }
+        Log.e("fetchMemberInfo", response.message)
+        return null
+    } catch (e: Exception) {
+        Log.e("fetchMemberInfo", e.message, e)
+        return null
+    }
+}
+
+suspend fun AccountManager.fetchAreasInfo(): List<AreaInfo>?
+{
+    try {
+        val response = apiWithToken.getAreasInfo()
+        if (response.code == 200) {
+            return response.data
+        }
+        Log.e("fetchAreasInfo", response.message)
+        return null
+    } catch (e: Exception) {
+        Log.e("fetchAreasInfo", e.message, e)
+        return null
     }
 }

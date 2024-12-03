@@ -3,7 +3,9 @@ package com.example.myapp.network
 import com.example.myapp.model.AccountDevices
 import com.example.myapp.model.AccountRequest
 import com.example.myapp.model.ApiResponse
+import com.example.myapp.model.AreaInfo
 import com.example.myapp.model.Jwt
+import com.example.myapp.model.Member
 import com.example.myapp.model.UserInfo
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -41,6 +43,13 @@ interface Tapi {
 
     @GET("my/device")
     suspend fun getAllAccountDevices(): ApiResponse<AccountDevices>
+
+    @GET("my/member")
+    suspend fun getMemberInfo(): ApiResponse<Member>
+
+    @GET("my/area")
+    suspend fun getAreasInfo(): ApiResponse< List<AreaInfo> >
+
 }
 
 
@@ -88,7 +97,6 @@ val api: Api = retrofit2.Retrofit.Builder()
     .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
     .build()
     .create(Api::class.java)
-
 
 @OptIn(ExperimentalSerializationApi::class)
 val apiWithToken: Tapi = retrofit2.Retrofit.Builder()
