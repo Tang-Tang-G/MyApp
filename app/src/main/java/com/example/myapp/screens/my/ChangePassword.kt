@@ -48,7 +48,11 @@ fun ChangePassword(navController: NavController) {
                 title = "修改密码",
                 goBack = { navController.popBackStack() }
             )
-            Spacer(modifier = Modifier.fillMaxWidth().height(30.dp))
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(30.dp)
+            )
             TextField(
                 value = oldPassword.value,
                 onValueChange = { oldPassword.value = it },
@@ -60,7 +64,11 @@ fun ChangePassword(navController: NavController) {
                     keyboardType = KeyboardType.Password
                 )
             )
-            Spacer(modifier = Modifier.fillMaxWidth().height(20.dp))
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(20.dp)
+            )
             TextField(
                 value = newPassword.value,
                 onValueChange = { newPassword.value = it },
@@ -72,7 +80,11 @@ fun ChangePassword(navController: NavController) {
                     keyboardType = KeyboardType.Password
                 )
             )
-            Spacer(modifier = Modifier.fillMaxWidth().height(20.dp))
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(20.dp)
+            )
             TextField(
                 value = confirmPassword.value,
                 onValueChange = { confirmPassword.value = it },
@@ -84,16 +96,18 @@ fun ChangePassword(navController: NavController) {
                     keyboardType = KeyboardType.Password
                 )
             )
-            Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(10.dp)
+            )
             Button(onClick = {
                 if (newPassword.value == oldPassword.value) {
-
+                    TODO()
                 } else if (newPassword.value == confirmPassword.value) {
-                    // 密码匹配，进行密码修改请求
-
+                    TODO("密码匹配，进行密码修改请求")
                 } else {
-                    // 如果密码不匹配，显示提示
-
+                    TODO("如果密码不匹配，显示提示")
                 }
             }) {
                 Text(text = "提交")
