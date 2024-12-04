@@ -73,7 +73,7 @@ fun UserInfoPage(navController: NavController) {
             if (!isEditing.value) {
                 userInfoState.value?.let { info ->
                     Column(
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalArrangement = spacedBy(16.dp),
                         horizontalAlignment = Alignment.Start
                     ) {
                         Row {
@@ -163,7 +163,7 @@ fun EditUserInfoForm(
             modifier = Modifier.fillMaxSize()
         ) {
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth()

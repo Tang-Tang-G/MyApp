@@ -37,7 +37,9 @@ fun ChangePassword(navController: NavController) {
         Column(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize().padding(16.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
             TopBarWithBack(
                 title = "修改密码",
@@ -78,11 +80,9 @@ fun ChangePassword(navController: NavController) {
                 )
             )
             Button(onClick = {
-                if(newPassword.value == oldPassword.value)
-                {
+                if (newPassword.value == oldPassword.value) {
                     //snatcker
-                }
-                else if (newPassword.value == confirmPassword.value ) {
+                } else if (newPassword.value == confirmPassword.value) {
                     // 密码匹配，进行密码修改请求
 
                 } else {

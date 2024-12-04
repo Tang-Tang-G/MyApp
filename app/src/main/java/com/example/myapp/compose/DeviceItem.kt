@@ -77,7 +77,7 @@ fun DeviceItem(device: DeviceInfo, open: Boolean) {
         Text(
             device.deviceName,
             fontSize = 12.sp
-            )
+        )
     }
 }
 

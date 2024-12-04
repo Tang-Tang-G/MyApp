@@ -64,13 +64,13 @@ fun ForgetPassword(navController: NavController) {
                 singleLine = true,
             )
             Spacer(modifier = Modifier.height(50.dp))
-                Button(
-                    onClick = {
-                        navController.popBackStack()
-                    }
-                ) {
-                    Text("查询密码") // TODO: add to strings.xml, replaced by stringResource
+            Button(
+                onClick = {
+                    navController.popBackStack()
                 }
+            ) {
+                Text("查询密码") // TODO: add to strings.xml, replaced by stringResource
+            }
         }
     }
 }

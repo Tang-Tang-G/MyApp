@@ -101,8 +101,7 @@ suspend fun AccountManager.fetchMemberInfo(): Member? {
     }
 }
 
-suspend fun AccountManager.fetchAreasInfo(): List<AreaInfo>?
-{
+suspend fun AccountManager.fetchAreasInfo(): List<AreaInfo>? {
     try {
         val response = apiWithToken.getAreasInfo()
         if (response.code == 200) {

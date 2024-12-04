@@ -48,7 +48,8 @@ interface Tapi {
     suspend fun getMemberInfo(): ApiResponse<Member>
 
     @GET("my/area")
-    suspend fun getAreasInfo(): ApiResponse< List<AreaInfo> >
+    suspend fun getAreasInfo(): ApiResponse<List<AreaInfo>>
+
 
 }
 
@@ -88,7 +89,6 @@ val okhttp = OkHttpClient.Builder()
     .addInterceptor(AuthInterceptor())
 //    .addInterceptor(HttpExceptionInterceptor())
     .build()
-
 
 
 @OptIn(ExperimentalSerializationApi::class)

@@ -74,21 +74,24 @@ fun HomeView() {
                             for (member in item.memberInfo) {
                                 composable(
                                     title = {
-                                        Text(
-                                            text = member.username,
-                                            style = MaterialTheme.typography.titleMedium,
-                                            color = MaterialTheme.colorScheme.secondary
-                                        )
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text(
+                                                text = member.username,
+                                                style = MaterialTheme.typography.titleMedium,
+                                                color = MaterialTheme.colorScheme.secondary
+                                            )
+                                        }
                                     }
                                 ) {
-                                    Button(
-                                        onClick = {
-                                        }
-                                    ) {
-                                        Text(
-                                            text = "删除"
-                                        )
-                                    }
+                                    Text(
+                                        text = "accountId:" + member.accountId.toString(),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = MaterialTheme.colorScheme.secondary
+                                    )
                                 }
                             }
                         }
