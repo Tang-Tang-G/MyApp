@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -16,12 +17,15 @@ import com.example.myapp.screens.my.MyStartView
 import com.example.myapp.screens.my.UserInfoPage
 
 @Composable
-fun MyView(loginViewModel: LoginViewModel = activityViewModel(), onLogout: () -> Unit = {}) {
+fun MyView(
+    loginViewModel: LoginViewModel = activityViewModel(),
+    onLogout: () -> Unit = {}
+) {
     val username by loginViewModel.username.observeAsState("Not Login")
     val loginNavController = rememberNavController()
-    //nav
     val changePasswordNav = stringResource(R.string.change_password_navigate)
     val userInfoNav = stringResource(R.string.user_info_navigate)
+    //nav
     val myStartView = "MyStartView"
     NavHost(
         navController = loginNavController,

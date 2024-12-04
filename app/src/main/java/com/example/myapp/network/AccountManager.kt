@@ -41,6 +41,7 @@ suspend fun AccountManager.signup(username: String, password: String): Boolean {
     try {
         return api.signup(AccountRequest(username, password)).code == 200
     } catch (e: Exception) {
+        Log.e("signup",e.toString())
         return false
     }
 }
