@@ -27,7 +27,14 @@ import com.example.myapp.model.LoginViewModel
 import com.example.myapp.model.activityViewModel
 
 @Composable
-fun DrawerContent(loginViewModel: LoginViewModel = activityViewModel()) {
+fun DrawerContent(loginViewModel: LoginViewModel = activityViewModel(),
+                  onChangePasswordClick: () -> Unit = {},
+                  onUserInfoClick: () -> Unit = {},
+                  onAddHouseClick: () -> Unit = {} ,
+                  onCreateHouseClick: () -> Unit = {},
+                  onCreateSceneClick: () -> Unit = {},
+                  onCreateAreaClick: () -> Unit = {} ,
+) {
     val username by loginViewModel.username.observeAsState("Not Login")
     Surface(
         modifier = Modifier
@@ -65,7 +72,7 @@ fun DrawerContent(loginViewModel: LoginViewModel = activityViewModel()) {
                         contentDescription = null
                     )
                 },
-                modifier = Modifier.clickable { }
+                modifier = Modifier.clickable { onUserInfoClick() }
             )
             HorizontalDivider()
             ListItem(
@@ -76,7 +83,7 @@ fun DrawerContent(loginViewModel: LoginViewModel = activityViewModel()) {
                         contentDescription = null
                     )
                 },
-                modifier = Modifier.clickable { },
+                modifier = Modifier.clickable { onChangePasswordClick() },
             )
             HorizontalDivider()
             ListItem(
@@ -87,7 +94,7 @@ fun DrawerContent(loginViewModel: LoginViewModel = activityViewModel()) {
                         contentDescription = null
                     )
                 },
-                modifier = Modifier.clickable { },
+                modifier = Modifier.clickable { onAddHouseClick() },
             )
             HorizontalDivider()
             ListItem(
@@ -98,7 +105,7 @@ fun DrawerContent(loginViewModel: LoginViewModel = activityViewModel()) {
                         contentDescription = null
                     )
                 },
-                modifier = Modifier.clickable { },
+                modifier = Modifier.clickable { onCreateHouseClick() },
             )
             HorizontalDivider()
             ListItem(
@@ -109,7 +116,7 @@ fun DrawerContent(loginViewModel: LoginViewModel = activityViewModel()) {
                         contentDescription = null
                     )
                 },
-                modifier = Modifier.clickable { },
+                modifier = Modifier.clickable { onCreateAreaClick() },
             )
             HorizontalDivider()
             ListItem(
@@ -120,7 +127,7 @@ fun DrawerContent(loginViewModel: LoginViewModel = activityViewModel()) {
                         contentDescription = null
                     )
                 },
-                modifier = Modifier.clickable { },
+                modifier = Modifier.clickable { onCreateSceneClick() },
             )
         }
     }

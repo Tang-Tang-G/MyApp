@@ -19,4 +19,8 @@
 
     <string name="login_screen_username_text_field_placeholder">用户名</string>
     <string name="login_screen_password_text_field_placeholder">输入密码</string>
+    <string name="add_house_navigation">AddHouse</string>
+    <string name="create_house_navigation">CreateHouse</string>
+    <string name="create_scene_navigation">CreateScene</string>
+    <string name="create_area_navigation">CreateArea</string>
 </resources>

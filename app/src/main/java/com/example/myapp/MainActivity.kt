@@ -15,6 +15,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.myapp.compose.AddHouseDialog
+import com.example.myapp.compose.CreateAreaDialog
+import com.example.myapp.compose.CreateHouseDialog
+import com.example.myapp.compose.CreateSceneDialog
 import com.example.myapp.model.InitModel
 import com.example.myapp.model.LoginViewModel
 import com.example.myapp.model.SessionManager
@@ -25,6 +29,8 @@ import com.example.myapp.screens.Content
 import com.example.myapp.screens.login.ForgetPassword
 import com.example.myapp.screens.login.Login
 import com.example.myapp.screens.login.SignUp
+import com.example.myapp.screens.my.ChangePassword
+import com.example.myapp.screens.my.UserInfoPage
 import com.example.myapp.screens.pair.PairDevice
 import com.example.myapp.ui.theme.MyAppTheme
 import kotlinx.coroutines.launch
@@ -120,6 +126,32 @@ fun MainView() {
         }
         composable("add device") {
             PairDevice(goBack = {
+                navController.popBackStack()
+            })
+        }
+        composable("UserInfo"){
+            UserInfoPage(navController)
+        }
+        composable("ChangePassword"){
+            ChangePassword(navController)
+        }
+        composable("AddHouse"){
+            AddHouseDialog(goBack = {
+                navController.popBackStack()
+            })
+        }
+        composable("CreateHouse"){
+            CreateHouseDialog(goBack = {
+                navController.popBackStack()
+            })
+        }
+        composable("CreateScene"){
+            CreateSceneDialog(goBack = {
+                navController.popBackStack()
+            })
+        }
+        composable("CreateArea"){
+            CreateAreaDialog(goBack = {
                 navController.popBackStack()
             })
         }
