@@ -1,12 +1,16 @@
 package com.example.myapp.pages.content
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,6 +27,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.myapp.compose.DeviceItem
 import com.example.myapp.compose.ExpandableNestedCards
@@ -31,6 +36,7 @@ import com.example.myapp.model.AccountDevices
 import com.example.myapp.network.AccountManager
 import com.example.myapp.network.fetchData
 import kotlinx.coroutines.launch
+import com.example.myapp.R
 
 @Composable
 fun OverView() {
@@ -39,7 +45,6 @@ fun OverView() {
         modifier = Modifier.fillMaxSize()
     ) {
         val scope = rememberCoroutineScope()
-
         // TODO: make the device store locally
         var deviceList by remember { mutableStateOf<AccountDevices?>(null) }
         LaunchedEffect(Unit) {
@@ -48,7 +53,6 @@ fun OverView() {
                 deviceList = devices
             }
         }
-
         deviceList?.let {
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
@@ -56,21 +60,43 @@ fun OverView() {
                 items(it.housesDevices) { item ->
                     ExpandableNestedCards(
                         title = {
-                            Text(
-                                text = item.houseInfo.houseName,
-                                style = MaterialTheme.typography.titleLarge,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.house_icon),
+                                    contentDescription = "家庭图标",
+                                    modifier = Modifier
+                                        .width(30.dp)
+                                )
+                                Spacer(modifier = Modifier.size(10.dp))
+                                Text(
+                                    text = item.houseInfo.houseName,
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
                         }
                     ) {
                         for (area in item.areasDevices) {
                             composable(
                                 title = {
-                                    Text(
-                                        text = area.areaInfo.areaName,
-                                        style = MaterialTheme.typography.titleMedium,
-                                        color = MaterialTheme.colorScheme.secondary,
-                                    )
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Image(
+                                            painter = painterResource(R.drawable.area_icon),
+                                            contentDescription = "区域图标",
+                                            modifier = Modifier
+                                                .width(20.dp)
+                                        )
+                                        Spacer(modifier = Modifier.size(10.dp))
+                                        Text(
+                                            text = area.areaInfo.areaName,
+                                            style = MaterialTheme.typography.titleMedium,
+                                            color = MaterialTheme.colorScheme.secondary,
+                                        )
+                                    }
                                 }
                             ) {
                                 for (device in area.devices) {
