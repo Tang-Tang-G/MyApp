@@ -3,6 +3,7 @@ package com.example.myapp.network
 import com.example.myapp.model.AccountDevices
 import com.example.myapp.model.AccountRequest
 import com.example.myapp.model.ApiResponse
+import com.example.myapp.model.DeviceAdd
 import com.example.myapp.model.Jwt
 import com.example.myapp.model.UserInfo
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -13,6 +14,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import java.io.IOException
 
@@ -34,13 +36,16 @@ interface Tapi {
 
     // TODO: change to patch
     @POST("userinfo")
-    suspend fun updateUserInfo(@Body userinfo: UserInfo): ApiResponse<Unit>
+    suspend fun addUserInfo(@Body userinfo: UserInfo): ApiResponse<Unit>
 
-    @POST("userinfo")
-    suspend fun newUserInfo(@Body userinfo: UserInfo): ApiResponse<UserInfo>
+    @PATCH("userinfo")
+    suspend fun updateUserInfo(@Body userinfo: UserInfo): ApiResponse<Unit>
 
     @GET("my/device")
     suspend fun getAllAccountDevices(): ApiResponse<AccountDevices>
+
+    @POST("my/device")
+    suspend fun addDevice(@Body deviceAdd: DeviceAdd): ApiResponse<Unit>
 }
 
 
