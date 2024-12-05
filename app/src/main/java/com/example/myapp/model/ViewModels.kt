@@ -43,3 +43,12 @@ class LoginViewModel : ViewModel() {
         }
     }
 }
+
+class DataViewModel : ViewModel() {
+    private val _accountInfo = MutableLiveData<AccountDevices>()
+    val accountInfo: LiveData<AccountDevices> = _accountInfo
+
+    fun setData(data: AccountDevices) {
+        _accountInfo.value = data
+    }
+}
