@@ -67,6 +67,14 @@ data class UserInfo(
 )
 
 @Serializable
+data class DeviceAdd(
+    @SerialName("efuse_mac") val eFuseMac: String,
+    @SerialName("device_name") val deviceName: String,
+    @SerialName("model_id") val modelId: Int,
+    @SerialName("area_id") val areaId: Int,
+)
+
+@Serializable
 data class AccountRequest(val username: String, val password: String)
 
 @Serializable
