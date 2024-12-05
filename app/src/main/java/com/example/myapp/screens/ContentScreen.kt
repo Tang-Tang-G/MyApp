@@ -15,7 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -36,7 +35,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun Content(screenNavController: NavController) {
     val bottomNavList = NavigationModel.bottomNavList
-
     // The current content page
     val pageSelection = remember { mutableIntStateOf(0) }
     // used for navigate different content page
@@ -49,6 +47,12 @@ fun Content(screenNavController: NavController) {
     val loginNav = stringResource(R.string.screen_nav_login_navigation)
     val contentNav = stringResource(R.string.screen_nav_content_navigation)
 
+    val userInfoNav = stringResource(R.string.user_info_navigate)
+    val changePasswordNav = stringResource(R.string.change_password_navigate)
+    val addHouseNav = stringResource(R.string.add_house_navigation)
+    val createHouseNav = stringResource(R.string.create_house_navigation)
+    val createSceneNav = stringResource(R.string.create_scene_navigation)
+    val createAreaNav = stringResource(R.string.create_area_navigation)
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val switchDrawer = {
@@ -58,10 +62,36 @@ fun Content(screenNavController: NavController) {
             }
         }
     }
-
     ModalNavigationDrawer(
         drawerState = drawerState,
-        drawerContent = { DrawerContent() }
+        drawerContent = {
+            DrawerContent(
+                onUserInfoClick = {
+                    switchDrawer()
+                    screenNavController.navigate(userInfoNav)
+                },
+                onChangePasswordClick = {
+                    switchDrawer()
+                    screenNavController.navigate(changePasswordNav)
+                },
+                onAddHouseClick = {
+                    switchDrawer()
+                    screenNavController.navigate(addHouseNav)
+                },
+                onCreateHouseClick = {
+                  switchDrawer()
+                  screenNavController.navigate(createHouseNav)
+                },
+                onCreateAreaClick = {
+                    switchDrawer()
+                    screenNavController.navigate(createAreaNav)
+                },
+                onCreateSceneClick = {
+                    switchDrawer()
+                    screenNavController.navigate(createSceneNav)
+                }
+            )
+        }
     ) {
         Scaffold(
             topBar = {
@@ -109,25 +139,19 @@ fun Content(screenNavController: NavController) {
                     SceneView()
                 }
                 composable(myNav) {
-                    MyView(onLogout = {
-                        screenNavController.navigate(loginNav) {
-                            popUpTo(contentNav) {
-                                inclusive = true
-                                saveState = true
+                    MyView(
+                        onLogout = {
+                            screenNavController.navigate(loginNav) {
+                                popUpTo(contentNav) {
+                                    inclusive = true
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
                             }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    })
+                        })
                 }
-
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun ContentPreview() {
-    Content(rememberNavController())
 }

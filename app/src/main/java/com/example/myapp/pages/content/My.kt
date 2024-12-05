@@ -16,12 +16,15 @@ import com.example.myapp.screens.my.MyStartView
 import com.example.myapp.screens.my.UserInfoPage
 
 @Composable
-fun MyView(loginViewModel: LoginViewModel = activityViewModel(), onLogout: () -> Unit = {}) {
+fun MyView(
+    loginViewModel: LoginViewModel = activityViewModel(),
+    onLogout: () -> Unit = {}
+) {
     val username by loginViewModel.username.observeAsState("Not Login")
     val loginNavController = rememberNavController()
-    //nav
     val changePasswordNav = stringResource(R.string.change_password_navigate)
     val userInfoNav = stringResource(R.string.user_info_navigate)
+    //nav
     val myStartView = "MyStartView"
     NavHost(
         navController = loginNavController,

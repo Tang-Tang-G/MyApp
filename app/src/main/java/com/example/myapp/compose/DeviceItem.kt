@@ -24,7 +24,6 @@ fun DeviceItem(device: DeviceInfo, open: Boolean) {
                 .fillMaxWidth()
                 .fillMaxHeight()
         ) {
-            // 动态加载图片
             val imageRes = when (device.deviceType.typeName) {
                 "light" -> R.drawable.light
                 "fan" -> R.drawable.fan
@@ -78,7 +77,7 @@ fun DeviceItem(device: DeviceInfo, open: Boolean) {
         Text(
             device.deviceName,
             fontSize = 12.sp
-            )
+        )
     }
 }
 

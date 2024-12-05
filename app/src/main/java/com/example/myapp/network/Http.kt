@@ -3,8 +3,10 @@ package com.example.myapp.network
 import com.example.myapp.model.AccountDevices
 import com.example.myapp.model.AccountRequest
 import com.example.myapp.model.ApiResponse
+import com.example.myapp.model.AreaInfo
 import com.example.myapp.model.DeviceAdd
 import com.example.myapp.model.Jwt
+import com.example.myapp.model.Member
 import com.example.myapp.model.UserInfo
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -17,6 +19,7 @@ import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import java.io.IOException
+import java.lang.reflect.Member
 
 interface Api {
     @POST("login")
@@ -34,7 +37,6 @@ interface Tapi {
     @GET("userinfo")
     suspend fun getUserInfo(): ApiResponse<UserInfo>
 
-    // TODO: change to patch
     @POST("userinfo")
     suspend fun addUserInfo(@Body userinfo: UserInfo): ApiResponse<Unit>
 
@@ -43,6 +45,12 @@ interface Tapi {
 
     @GET("my/device")
     suspend fun getAllAccountDevices(): ApiResponse<AccountDevices>
+
+    @GET("my/member")
+    suspend fun getMemberInfo(): ApiResponse<Member>
+
+    @GET("my/area")
+    suspend fun getAreasInfo(): ApiResponse<List<AreaInfo>>
 
     @POST("my/device")
     suspend fun addDevice(@Body deviceAdd: DeviceAdd): ApiResponse<Unit>
@@ -86,14 +94,12 @@ val okhttp = OkHttpClient.Builder()
     .build()
 
 
-
 @OptIn(ExperimentalSerializationApi::class)
 val api: Api = retrofit2.Retrofit.Builder()
     .baseUrl("http://47.108.27.238/api/")
     .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
     .build()
     .create(Api::class.java)
-
 
 @OptIn(ExperimentalSerializationApi::class)
 val apiWithToken: Tapi = retrofit2.Retrofit.Builder()

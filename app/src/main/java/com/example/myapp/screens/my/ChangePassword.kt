@@ -2,7 +2,10 @@ package com.example.myapp.screens.my
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -37,12 +40,18 @@ fun ChangePassword(navController: NavController) {
         Column(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize().padding(16.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
             TopBarWithBack(
                 title = "修改密码",
                 goBack = { navController.popBackStack() }
-
+            )
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(30.dp)
             )
             TextField(
                 value = oldPassword.value,
@@ -55,6 +64,11 @@ fun ChangePassword(navController: NavController) {
                     keyboardType = KeyboardType.Password
                 )
             )
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(20.dp)
+            )
             TextField(
                 value = newPassword.value,
                 onValueChange = { newPassword.value = it },
@@ -65,6 +79,11 @@ fun ChangePassword(navController: NavController) {
                     imeAction = ImeAction.Done,
                     keyboardType = KeyboardType.Password
                 )
+            )
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(20.dp)
             )
             TextField(
                 value = confirmPassword.value,
@@ -77,17 +96,18 @@ fun ChangePassword(navController: NavController) {
                     keyboardType = KeyboardType.Password
                 )
             )
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(10.dp)
+            )
             Button(onClick = {
-                if(newPassword.value == oldPassword.value)
-                {
-                    //snatcker
-                }
-                else if (newPassword.value == confirmPassword.value ) {
-                    // 密码匹配，进行密码修改请求
-
+                if (newPassword.value == oldPassword.value) {
+                    TODO()
+                } else if (newPassword.value == confirmPassword.value) {
+                    TODO("密码匹配，进行密码修改请求")
                 } else {
-                    // 如果密码不匹配，显示提示
-
+                    TODO("如果密码不匹配，显示提示")
                 }
             }) {
                 Text(text = "提交")

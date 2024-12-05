@@ -63,7 +63,19 @@ data class UserInfo(
     val gender: String?,
     val age: Int?,
     val city: String?,
-    val name: String?,
+    val name: String?
+)
+
+
+@Serializable
+data class HouseMember(
+    @SerialName("house_info") val houseInfo: HouseInfo,
+    @SerialName("account") val memberInfo: List<AccountInfo>
+)
+
+@Serializable
+data class Member(
+    @SerialName("houses_member") val houseMember: List<HouseMember>
 )
 
 @Serializable
@@ -81,4 +93,13 @@ data class AccountRequest(val username: String, val password: String)
 data class Jwt(val token: String)
 
 @Serializable
-data class ApiResponse<T>(val code: Int, val message: String, val timestamp: Int, val data: T? = null)
+data class ApiResponse<T>(
+    val code: Int,
+    val message: String,
+    val timestamp: Int,
+    val data: T? = null
+)
+
+
+
+
