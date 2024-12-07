@@ -87,6 +87,17 @@ data class DeviceAdd(
 )
 
 @Serializable
+data class AreaAdd(
+    @SerialName("area_name") val areaName: String,
+    @SerialName("house_id") val houseId: Int
+)
+
+@Serializable
+data class HouseAdd(
+    @SerialName("house_name") val houseName: String
+)
+
+@Serializable
 data class AccountRequest(val username: String, val password: String)
 
 @Serializable
