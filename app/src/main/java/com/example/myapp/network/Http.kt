@@ -3,14 +3,17 @@ package com.example.myapp.network
 import com.example.myapp.model.AccountDevices
 import com.example.myapp.model.AccountRequest
 import com.example.myapp.model.ApiResponse
+import com.example.myapp.model.AreaAdd
 import com.example.myapp.model.AreaInfo
 import com.example.myapp.model.DeviceAdd
+import com.example.myapp.model.HouseAdd
 import com.example.myapp.model.Jwt
 import com.example.myapp.model.Member
 import com.example.myapp.model.UserInfo
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -18,8 +21,8 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Path
 import java.io.IOException
-import java.lang.reflect.Member
 
 interface Api {
     @POST("login")
@@ -53,7 +56,16 @@ interface Tapi {
     suspend fun getAreasInfo(): ApiResponse<List<AreaInfo>>
 
     @POST("my/device")
-    suspend fun addDevice(@Body deviceAdd: DeviceAdd): ApiResponse<Unit>
+    suspend fun addDevice(@Body deviceAdd: DeviceAdd): ApiResponse<Int>
+
+    @POST("my/house")
+    suspend fun addHouse(@Body houseAdd: HouseAdd): ApiResponse<Int>
+
+    @POST("my/area")
+    suspend fun addArea(@Body areaAdd: AreaAdd): ApiResponse<Int>
+
+    @GET("my/device/{id}/status")
+    suspend fun getDeviceStatus(@Path("id") deviceId: Int): ApiResponse<JsonObject>
 }
 
 
