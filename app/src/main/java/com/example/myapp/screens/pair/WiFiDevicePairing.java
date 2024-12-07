@@ -24,6 +24,10 @@ public class WiFiDevicePairing extends Pair {
         this.port = port;
     }
 
+    public String getDeviceInfo() {
+        return super.deviceInfo;
+    }
+
     @Override
     public boolean pair() {
         try (Socket socket = new Socket()) {
