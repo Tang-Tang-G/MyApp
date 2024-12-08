@@ -2,10 +2,14 @@ package com.example.myapp.network
 
 import com.example.myapp.model.AccountDevices
 import com.example.myapp.model.AccountRequest
+import com.example.myapp.model.AddArea
 import com.example.myapp.model.ApiResponse
 import com.example.myapp.model.AreaInfo
+import com.example.myapp.model.HouseAdd
+import com.example.myapp.model.HouseInfo
 import com.example.myapp.model.Jwt
 import com.example.myapp.model.Member
+import com.example.myapp.model.NewAccountInfo
 import com.example.myapp.model.UserInfo
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -14,8 +18,11 @@ import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Path
 import java.io.IOException
 
 interface Api {
@@ -41,6 +48,8 @@ interface Tapi {
     @POST("userinfo")
     suspend fun newUserInfo(@Body userinfo: UserInfo): ApiResponse<UserInfo>
 
+    @PATCH("account")
+    suspend fun updateAccountInfo(@Body newAccountInfo: NewAccountInfo): ApiResponse<Unit>
     @GET("my/device")
     suspend fun getAllAccountDevices(): ApiResponse<AccountDevices>
 
@@ -49,8 +58,16 @@ interface Tapi {
 
     @GET("my/area")
     suspend fun getAreasInfo(): ApiResponse<List<AreaInfo>>
-
-
+    @POST("my/area")
+    suspend fun createArea(@Body addArea: AddArea): ApiResponse<Int>
+    @PATCH("my/area/{areaId}")
+    suspend fun updateArea(@Path("areaId") areaId: Int, areaName:String): ApiResponse<Unit>
+    @DELETE("my/area/{areaId}")
+    suspend fun deleteArea(@Path("areaId") areaId: Int): ApiResponse<Unit>
+    @GET("my/house")
+    suspend fun getHouseInfo(): ApiResponse<List<HouseInfo>>
+    @POST("my/house")
+    suspend fun createHouse(@Body houseAdd: HouseAdd): ApiResponse<Int>
 }
 
 

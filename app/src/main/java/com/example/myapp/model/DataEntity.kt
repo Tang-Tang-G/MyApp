@@ -66,6 +66,12 @@ data class UserInfo(
     val name: String?
 )
 
+@Serializable
+data class NewAccountInfo(
+    @SerialName("old_password") val oldPassword: String,
+    @SerialName("new_password") val newPassword: String?,
+    @SerialName("account_name") val username: String?
+)
 
 @Serializable
 data class HouseMember(
@@ -76,6 +82,17 @@ data class HouseMember(
 @Serializable
 data class Member(
     @SerialName("houses_member") val houseMember: List<HouseMember>
+)
+
+@Serializable
+data class HouseAdd(
+    @SerialName("house_name") val houseName: String
+)
+
+@Serializable
+data class AddArea(
+    @SerialName("house_id") val houseId: Int,
+    @SerialName("area_name") val houseName: String
 )
 
 @Serializable

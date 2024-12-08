@@ -70,8 +70,16 @@ fun OverView() {
                                         .width(30.dp)
                                 )
                                 Spacer(modifier = Modifier.size(10.dp))
+                                Text("家庭名：")
                                 Text(
                                     text = item.houseInfo.houseName,
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                                Spacer(modifier = Modifier.size(10.dp))
+                                Text("家庭ID：")
+                                Text(
+                                    text = item.houseInfo.houseId.toString(),
                                     style = MaterialTheme.typography.titleLarge,
                                     color = MaterialTheme.colorScheme.primary
                                 )

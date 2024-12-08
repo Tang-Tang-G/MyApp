@@ -23,11 +23,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
+import com.example.myapp.compose.DeleteDialog
 import com.example.myapp.compose.ExpandableNestedCards
 import com.example.myapp.compose.composable
 import com.example.myapp.model.AreaInfo
 import com.example.myapp.model.Member
 import com.example.myapp.network.AccountManager
+import com.example.myapp.network.deleteArea
 import com.example.myapp.network.fetchAreasInfo
 import com.example.myapp.network.fetchMemberInfo
 import kotlinx.coroutines.launch
@@ -106,7 +108,10 @@ fun HomeView() {
         ) {
             val scope = rememberCoroutineScope()
             var areasList by remember { mutableStateOf<List<AreaInfo>?>(null) }
-            LaunchedEffect(Unit) {
+            var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
+            var areaToDelete by remember { mutableStateOf<AreaInfo?>(null) }
+            var update by remember { mutableStateOf(false) }
+            LaunchedEffect(update) {
                 scope.launch {
                     val areas = AccountManager.fetchAreasInfo()
                     areasList = areas
@@ -121,7 +126,7 @@ fun HomeView() {
             areasList?.let { list ->
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
-                ) {
+                ){
                     items(list) { item ->
                         ExpandableNestedCards(
                             title = {
@@ -149,6 +154,8 @@ fun HomeView() {
                                         Spacer(modifier = Modifier.width(16.dp))
                                         Button(
                                             onClick = {
+                                                showDeleteConfirmationDialog = true
+                                                areaToDelete = item
                                             }
                                         ) {
                                             Text(
@@ -161,7 +168,22 @@ fun HomeView() {
                         }
                     }
                 }
-            }
+                if(showDeleteConfirmationDialog)
+                {
+                    DeleteDialog(
+                        name = areaToDelete!!.areaName,
+                        onDismissRequest = {
+                            showDeleteConfirmationDialog = false
+                        },
+                        onDeleteConfirmed = {
+                            scope.launch {
+                                AccountManager.deleteArea(areaToDelete!!.areaId)
+                                showDeleteConfirmationDialog = false
+                                update = !update
+                            }
+                        }
+                    )}
+                }
+        }
         }
     }
-}

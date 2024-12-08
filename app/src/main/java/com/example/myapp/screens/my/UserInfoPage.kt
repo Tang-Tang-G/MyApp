@@ -118,14 +118,14 @@ fun UserInfoPage(navController: NavController) {
                             scope.launch {
                                 val isUpdated = AccountManager.updateUserInfo(updatedUserInfo)
                                 if (isUpdated) {
-                                    userInfoState.value = updatedUserInfo // 更新 UI
+                                    userInfoState.value = updatedUserInfo
                                     isEditing.value = false
                                 } else {
                                     // 处理更新失败的情况
+
                                 }
                             }
                         } else {
-                            // 如果没有变化，不需要提交
                             isEditing.value = false
                         }
                     },

@@ -29,7 +29,7 @@ import com.example.myapp.screens.Content
 import com.example.myapp.screens.login.ForgetPassword
 import com.example.myapp.screens.login.Login
 import com.example.myapp.screens.login.SignUp
-import com.example.myapp.screens.my.ChangePassword
+import com.example.myapp.screens.my.ChangeAccountInfo
 import com.example.myapp.screens.my.UserInfoPage
 import com.example.myapp.screens.pair.PairDevice
 import com.example.myapp.ui.theme.MyAppTheme
@@ -133,7 +133,7 @@ fun MainView() {
             UserInfoPage(navController)
         }
         composable("ChangePassword"){
-            ChangePassword(navController)
+            ChangeAccountInfo(navController)
         }
         composable("AddHouse"){
             AddHouseDialog(goBack = {

@@ -16,6 +16,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
@@ -25,15 +26,19 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.myapp.compose.TopBarWithBack
+import com.example.myapp.network.AccountManager
+import com.example.myapp.network.updateAccountInfo
+import kotlinx.coroutines.launch
 
 @Composable
-fun ChangePassword(navController: NavController) {
+fun ChangeAccountInfo(navController: NavController) {
     // 状态保存文本框中的输入值
     val oldPassword = remember { mutableStateOf("") }
     val newPassword = remember { mutableStateOf("") }
-    val confirmPassword = remember { mutableStateOf("") }
+    val username = remember { mutableStateOf("") }
+    val isOldPasswordValid = remember { mutableStateOf(true) }
     val focusManager = LocalFocusManager.current
-
+    val scope = rememberCoroutineScope()
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -55,15 +60,22 @@ fun ChangePassword(navController: NavController) {
             )
             TextField(
                 value = oldPassword.value,
-                onValueChange = { oldPassword.value = it },
-                label = { Text("原密码") },
+                onValueChange = {
+                    oldPassword.value = it
+                    isOldPasswordValid.value = it.isNotEmpty()
+                },
+                label = { Text("原密码（必填）") },
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done,
                     keyboardType = KeyboardType.Password
-                )
+                ),
+                isError = !isOldPasswordValid.value
             )
+            if (!isOldPasswordValid.value) {
+                Text("原密码为必填项", color = androidx.compose.ui.graphics.Color.Red)
+            }
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -86,28 +98,32 @@ fun ChangePassword(navController: NavController) {
                     .height(20.dp)
             )
             TextField(
-                value = confirmPassword.value,
-                onValueChange = { confirmPassword.value = it },
-                label = { Text("确认新密码") },
-                visualTransformation = PasswordVisualTransformation(),
+                value = username.value,
+                onValueChange = { username.value = it },
+                label = { Text("新用户名") },
                 keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done,
-                    keyboardType = KeyboardType.Password
+                    keyboardType = KeyboardType.Text
                 )
             )
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(10.dp)
+                    .height(20.dp)
             )
             Button(onClick = {
-                if (newPassword.value == oldPassword.value) {
-                    TODO()
-                } else if (newPassword.value == confirmPassword.value) {
-                    TODO("密码匹配，进行密码修改请求")
-                } else {
-                    TODO("如果密码不匹配，显示提示")
+                if (oldPassword.value.isEmpty()) {
+                    isOldPasswordValid.value = false
+                }else {
+                    scope.launch {
+                        AccountManager.updateAccountInfo(
+                            oldPassword = oldPassword.value,
+                            newPassword = if (newPassword.value.isEmpty()) null else newPassword.value,
+                            username = if (username.value.isEmpty()) null else username.value
+                        )
+                    }
+                    navController.popBackStack()
                 }
             }) {
                 Text(text = "提交")

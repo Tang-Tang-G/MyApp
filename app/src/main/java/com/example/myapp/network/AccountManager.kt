@@ -3,9 +3,13 @@ package com.example.myapp.network
 import android.util.Log
 import com.example.myapp.model.AccountDevices
 import com.example.myapp.model.AccountRequest
+import com.example.myapp.model.AddArea
 import com.example.myapp.model.AreaInfo
+import com.example.myapp.model.HouseAdd
+import com.example.myapp.model.HouseInfo
 import com.example.myapp.model.Jwt
 import com.example.myapp.model.Member
+import com.example.myapp.model.NewAccountInfo
 import com.example.myapp.model.UserInfo
 
 object AccountManager {
@@ -41,7 +45,7 @@ suspend fun AccountManager.signup(username: String, password: String): Boolean {
     try {
         return api.signup(AccountRequest(username, password)).code == 200
     } catch (e: Exception) {
-        Log.e("signup",e.toString())
+        Log.e("signup", e.toString())
         return false
     }
 }
@@ -113,5 +117,83 @@ suspend fun AccountManager.fetchAreasInfo(): List<AreaInfo>? {
     } catch (e: Exception) {
         Log.e("fetchAreasInfo", e.message, e)
         return null
+    }
+}
+
+suspend fun AccountManager.createArea(houseId: Int, areaName: String): Boolean {
+    try {
+        val response = apiWithToken.createArea(addArea = AddArea(houseId,areaName))
+        if (response.code == 200) {
+            return true
+        }
+        Log.e("createArea", response.message)
+        return false
+    } catch (e: Exception) {
+        Log.e("createArea", e.message, e)
+        return false
+    }
+}
+suspend fun AccountManager.deleteArea(accountId: Int): Boolean {
+    try {
+        val response = apiWithToken.deleteArea(accountId)
+        if (response.code == 200) {
+            return true
+        }
+        Log.e("deleteArea", response.message)
+        return false
+    } catch (e: Exception) {
+        Log.e("deleteArea", e.message, e)
+        return false
+    }
+}
+suspend fun AccountManager.fetchHouseInfo(): List<HouseInfo>? {
+    try {
+        val response = apiWithToken.getHouseInfo()
+        if (response.code == 200) {
+            return response.data
+        }
+        Log.e("fetchHouseInfo", response.message)
+        return null
+    } catch (e: Exception) {
+        Log.e("fetchHouseInfo", e.message, e)
+        return null
+    }
+}
+
+suspend fun AccountManager.crateNewHouse(houseName: String): Boolean {
+    try {
+        val response = apiWithToken.createHouse(houseAdd = HouseAdd(houseName))
+        if (response.code == 200) {
+            return true
+        }
+        Log.e("createHousesInfo", response.message)
+        return false
+    } catch (e: Exception) {
+        Log.e("createHouseInfo", e.message, e)
+        return false
+    }
+}
+
+suspend fun AccountManager.updateAccountInfo(
+    oldPassword: String,
+    newPassword: String?,
+    username: String?
+): Boolean {
+    try {
+        val response = apiWithToken.updateAccountInfo(
+            newAccountInfo = NewAccountInfo(
+                oldPassword,
+                newPassword,
+                username
+            )
+        )
+        if (response.code == 200) {
+            return true
+        }
+        Log.e("updateAccountInfo", response.message)
+        return false
+    } catch (e: Exception) {
+        Log.e("updateAccountInfo", e.message, e)
+        return false
     }
 }

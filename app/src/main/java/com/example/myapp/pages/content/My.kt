@@ -11,7 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.myapp.R
 import com.example.myapp.model.LoginViewModel
 import com.example.myapp.model.activityViewModel
-import com.example.myapp.screens.my.ChangePassword
+import com.example.myapp.screens.my.ChangeAccountInfo
 import com.example.myapp.screens.my.MyStartView
 import com.example.myapp.screens.my.UserInfoPage
 
@@ -39,7 +39,7 @@ fun MyView(
             )
         }
         composable(changePasswordNav) {
-            ChangePassword(loginNavController)
+            ChangeAccountInfo(loginNavController)
         }
         composable(userInfoNav) {
             UserInfoPage(loginNavController)
