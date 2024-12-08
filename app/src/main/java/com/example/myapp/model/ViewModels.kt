@@ -51,4 +51,6 @@ class DataViewModel : ViewModel() {
     fun setData(data: AccountDevices) {
         _accountInfo.value = data
     }
+
+
 }

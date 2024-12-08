@@ -49,6 +49,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.myapp.compose.DropdownSelectMenu
 import com.example.myapp.compose.TopBarWithBack
 import com.example.myapp.model.AreaAdd
 import com.example.myapp.model.DataViewModel
@@ -429,68 +430,3 @@ fun Connecting(
         }
     }
 }
-
-
-
-@Preview
-@Composable
-fun DropdownSelectMenu(
-    items: List<String> = listOf("abc", "def"),
-    defaultItemValue: String = "default",
-    onSelect: (Int) -> Unit = {},
-) {
-    val itemsWithDefault = items.plus(defaultItemValue)
-    var expanded by remember { mutableStateOf(false) }  // 控制菜单展开/折叠
-    var selectedIndex by remember { mutableIntStateOf(0) }
-
-    Surface(
-        color = MaterialTheme.colorScheme.surfaceContainerHigh, shape = ShapeDefaults.Small
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier
-                .height(60.dp)
-                .width(200.dp)
-                .fillMaxSize()
-                .clickable { expanded = !expanded }) {
-            // 显示当前选中的项
-            if (selectedIndex >= itemsWithDefault.size) {
-                selectedIndex = 0
-            }
-            Text(
-                text = itemsWithDefault[selectedIndex],
-                style = MaterialTheme.typography.bodyLarge,
-                fontSize = 20.sp
-            )
-            Spacer(modifier = Modifier.width(20.dp))
-            // 触发按钮
-            Icon(
-                imageVector = Icons.Default.ArrowDropDown, contentDescription = "Open Dropdown Menu"
-            )
-        }
-
-
-        // 条形下拉菜单
-        DropdownMenu(
-            expanded = expanded, onDismissRequest = { expanded = false },  // 点击外部关闭菜单
-            modifier = Modifier.padding(top = 8.dp)
-        ) {
-            // 水平排列菜单项
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp),  // 菜单项之间的间距
-                horizontalAlignment = Alignment.Start
-            ) {
-                for ((index, item) in itemsWithDefault.withIndex()) {
-                    DropdownMenuItem(text = { Text(item) }, onClick = {
-                        selectedIndex = index
-                        expanded = false
-                        onSelect(index)
-                    }, modifier = Modifier.padding(horizontal = 8.dp)  // 水平内边距
-                    )
-                }
-            }
-        }
-    }
-}
-

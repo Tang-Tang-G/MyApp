@@ -2,14 +2,18 @@ package com.example.myapp.compose
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -19,11 +23,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import androidx.navigation.NavController
+import com.example.myapp.model.DataViewModel
+import com.example.myapp.model.HouseAdd
 import com.example.myapp.model.HouseInfo
+import com.example.myapp.model.activityViewModel
 import com.example.myapp.network.AccountManager
+import com.example.myapp.network.apiWithToken
 import com.example.myapp.network.crateNewHouse
 import com.example.myapp.network.createArea
 import com.example.myapp.network.fetchHouseInfo
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -65,20 +75,17 @@ fun CreateDialog(
 @Composable
 fun CreateHouseDialog(goBack: () -> Unit = {}) {
     val houseName = remember { mutableStateOf("") }
-    var houseList by remember { mutableStateOf<List<HouseInfo>?>(null) }
     var isDuplicate by remember { mutableStateOf(false) }
-
+    val deviceModel: DataViewModel = activityViewModel()
+    val data by deviceModel.accountInfo.observeAsState()
+    val houses = data?.housesDevices
+    var houseList =houses?.map { it.houseInfo.houseName } ?: listOf()
     val scope = rememberCoroutineScope()
-    LaunchedEffect(Unit) {
-        scope.launch {
-            houseList = AccountManager.fetchHouseInfo()
-        }
-    }
+
     CreateDialog(
         onCreate = {
             //创建家庭的具体操作
-            if (houseList != null && houseList!!.any { it.houseName == houseName.value }) {
-                // 如果存在重复，显示错误消息
+            if (houseList.any { it == houseName.value }) {
                 isDuplicate = true
             } else {
                 isDuplicate = false
@@ -110,14 +117,32 @@ fun CreateHouseDialog(goBack: () -> Unit = {}) {
 
 @Composable
 fun CreateAreaDialog(goBack: () -> Unit = {}) {
-    val houseId = remember { mutableStateOf("") }
+    val deviceModel: DataViewModel = activityViewModel()
+    val data by deviceModel.accountInfo.observeAsState()
+    val houses = data?.housesDevices
+    val houseNames = houses?.map { it.houseInfo.houseName } ?: listOf()
+    val houseIds = houses?.map { it.houseInfo.houseId } ?: listOf()
+    var houseIndex by remember { mutableIntStateOf(0) }
+    var newHouseName by remember { mutableStateOf("") }
     val areaName = remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
+
     CreateDialog(
         onCreate = {
-            //创建区域的具体操作
             scope.launch {
-            AccountManager.createArea(houseId.value.toInt(),areaName.value)
+                var houseId = houseIds.getOrNull(houseIndex)
+                // New House
+                if (houseIndex >= houseNames.size) {
+                    val resp = apiWithToken.addHouse(HouseAdd(newHouseName))
+                    if (resp.code != 200 || resp.data == null) {
+                        delay(100)
+                        throw Error("new house response error")
+                    }
+                    houseId = resp.data
+                }
+                if(areaName.value!="") {
+                    houseId?.let { AccountManager.createArea(it,areaName.value) }
+                }
             }
             goBack()
         },
@@ -126,12 +151,16 @@ fun CreateAreaDialog(goBack: () -> Unit = {}) {
             goBack()
         },
         content = {
-            TextField(
-                value = houseId.value,
-                onValueChange = { houseId.value = it },
-                label = { Text("家庭ID") },
-            )
-            Spacer(modifier = Modifier.size(20.dp))
+            DropdownSelectMenu(items = houseNames,
+                defaultItemValue = "新建家庭",
+                onSelect = { houseIndex = it })
+            Spacer(modifier = Modifier.size(10.dp))
+            if (houseIndex >= houseNames.size) {
+                TextField(value = newHouseName,
+                    onValueChange = { newHouseName = it },
+                    placeholder = { Text("家庭名") })
+                Spacer(modifier = Modifier.height(50.dp))
+            }
             TextField(
                 value = areaName.value,
                 onValueChange = { areaName.value = it },
@@ -141,6 +170,7 @@ fun CreateAreaDialog(goBack: () -> Unit = {}) {
     )
 }
 
+//TODO(未完成)
 @Composable
 fun CreateSceneDialog(goBack: () -> Unit = {}) {
     val familyName = remember { mutableStateOf("") }
@@ -169,11 +199,4 @@ fun CreateSceneDialog(goBack: () -> Unit = {}) {
 
         }
     )
-}
-
-
-@Preview
-@Composable
-fun Preview() {
-    CreateAreaDialog()
 }
