@@ -3,13 +3,13 @@ package com.example.myapp.network
 import android.util.Log
 import com.example.myapp.model.AccountDevices
 import com.example.myapp.model.AccountRequest
-import com.example.myapp.model.AddArea
+import com.example.myapp.model.AccountUpdate
+import com.example.myapp.model.AreaAdd
 import com.example.myapp.model.AreaInfo
 import com.example.myapp.model.HouseAdd
 import com.example.myapp.model.HouseInfo
 import com.example.myapp.model.Jwt
 import com.example.myapp.model.Member
-import com.example.myapp.model.NewAccountInfo
 import com.example.myapp.model.UserInfo
 
 object AccountManager {
@@ -80,7 +80,7 @@ suspend fun AccountManager.fetchUserInfo(): UserInfo? {
 
 suspend fun AccountManager.updateUserInfo(userInfo: UserInfo): Boolean {
     try {
-        val response = apiWithToken.addUserInfo(userInfo)
+        val response = apiWithToken.newUserInfo(userInfo)
         if (response.code == 200) {
             return true
         }
@@ -122,7 +122,7 @@ suspend fun AccountManager.fetchAreasInfo(): List<AreaInfo>? {
 
 suspend fun AccountManager.createArea(houseId: Int, areaName: String): Boolean {
     try {
-        val response = apiWithToken.createArea(addArea = AddArea(houseId,areaName))
+        val response = apiWithToken.createArea(addArea = AreaAdd(houseId,areaName))
         if (response.code == 200) {
             return true
         }
@@ -174,14 +174,14 @@ suspend fun AccountManager.crateNewHouse(houseName: String): Boolean {
     }
 }
 
-suspend fun AccountManager.updateAccountInfo(
+suspend fun AccountManager.updateAccount(
     oldPassword: String,
     newPassword: String?,
     username: String?
 ): Boolean {
     try {
-        val response = apiWithToken.updateAccountInfo(
-            newAccountInfo = NewAccountInfo(
+        val response = apiWithToken.updateAccount(
+            newAccountInfo = AccountUpdate(
                 oldPassword,
                 newPassword,
                 username

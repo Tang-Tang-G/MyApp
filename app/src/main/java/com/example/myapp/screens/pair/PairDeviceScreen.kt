@@ -349,8 +349,8 @@ fun PairDevice(
                                     if (areas == null || areaIndex >= areaNames.size) {
                                         val resp = apiWithToken.addArea(
                                             AreaAdd(
-                                                newAreaName,
-                                                houseId!!
+                                                houseId = houseId!!,
+                                                areaName = newAreaName,
                                             )
                                         )
                                         if (resp.code != 200 || resp.data == null) {
@@ -431,10 +431,12 @@ fun Connecting(
 }
 
 
+
+@Preview
 @Composable
 fun DropdownSelectMenu(
-    items: List<String>,
-    defaultItemValue: String,
+    items: List<String> = listOf("abc", "def"),
+    defaultItemValue: String = "default",
     onSelect: (Int) -> Unit = {},
 ) {
     val itemsWithDefault = items.plus(defaultItemValue)
@@ -491,3 +493,4 @@ fun DropdownSelectMenu(
         }
     }
 }
+

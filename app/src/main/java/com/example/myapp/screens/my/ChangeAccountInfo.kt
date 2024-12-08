@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.myapp.compose.TopBarWithBack
 import com.example.myapp.network.AccountManager
-import com.example.myapp.network.updateAccountInfo
+import com.example.myapp.network.updateAccount
 import kotlinx.coroutines.launch
 
 @Composable
@@ -117,7 +117,7 @@ fun ChangeAccountInfo(navController: NavController) {
                     isOldPasswordValid.value = false
                 }else {
                     scope.launch {
-                        AccountManager.updateAccountInfo(
+                        AccountManager.updateAccount(
                             oldPassword = oldPassword.value,
                             newPassword = if (newPassword.value.isEmpty()) null else newPassword.value,
                             username = if (username.value.isEmpty()) null else username.value

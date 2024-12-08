@@ -10,7 +10,7 @@ import com.example.myapp.model.HouseAdd
 import com.example.myapp.model.HouseInfo
 import com.example.myapp.model.Jwt
 import com.example.myapp.model.Member
-import com.example.myapp.model.NewAccountInfo
+import com.example.myapp.model.AccountUpdate
 import com.example.myapp.model.UserInfo
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -50,7 +50,7 @@ interface Tapi {
     suspend fun newUserInfo(@Body userinfo: UserInfo): ApiResponse<UserInfo>
 
     @PATCH("account")
-    suspend fun updateAccountInfo(@Body newAccountInfo: NewAccountInfo): ApiResponse<Unit>
+    suspend fun updateAccount(@Body newAccountInfo: AccountUpdate): ApiResponse<Unit>
 
     @GET("my/device")
     suspend fun getAllAccountDevices(): ApiResponse<AccountDevices>

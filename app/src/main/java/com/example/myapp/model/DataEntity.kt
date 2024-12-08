@@ -67,7 +67,7 @@ data class UserInfo(
 )
 
 @Serializable
-data class NewAccountInfo(
+data class AccountUpdate(
     @SerialName("old_password") val oldPassword: String,
     @SerialName("new_password") val newPassword: String?,
     @SerialName("account_name") val username: String?
