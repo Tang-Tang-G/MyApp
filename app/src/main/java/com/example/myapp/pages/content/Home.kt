@@ -21,21 +21,33 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import com.example.myapp.compose.DeleteDialog
 import com.example.myapp.compose.ExpandableNestedCards
 import com.example.myapp.compose.composable
 import com.example.myapp.model.AreaInfo
+import com.example.myapp.model.HouseInfo
 import com.example.myapp.model.Member
 import com.example.myapp.network.AccountManager
 import com.example.myapp.network.deleteArea
+import com.example.myapp.network.deleteHouse
 import com.example.myapp.network.fetchAreasInfo
 import com.example.myapp.network.fetchMemberInfo
 import kotlinx.coroutines.launch
 
 @Composable
 fun HomeView() {
+    val scope = rememberCoroutineScope()
+    var areasList by remember { mutableStateOf<List<AreaInfo>?>(null) }
+    var showDeleteHouseDialog by remember { mutableStateOf(false) }
+    var showDeleteAreaDialog by remember { mutableStateOf(false) }
+    var areaToDelete by remember { mutableStateOf<AreaInfo?>(null) }
+    var houseToDelete by remember { mutableStateOf<HouseInfo?>(null) }
+    var update by remember { mutableStateOf(false) }
+    var memberList by remember { mutableStateOf<Member?>(null) }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
@@ -45,9 +57,7 @@ fun HomeView() {
                 .fillMaxWidth()
                 .weight(0.5f)
         ) {
-            val scope = rememberCoroutineScope()
-            var memberList by remember { mutableStateOf<Member?>(null) }
-            LaunchedEffect(Unit) {
+            LaunchedEffect(update) {
                 scope.launch {
                     val members = AccountManager.fetchMemberInfo()
                     memberList = members
@@ -66,11 +76,33 @@ fun HomeView() {
                     items(it.houseMember) { item ->
                         ExpandableNestedCards(
                             title = {
-                                Text(
-                                    text = item.houseInfo.houseName,
-                                    style = MaterialTheme.typography.titleLarge,
-                                    color = MaterialTheme.colorScheme.primary,
-                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ){
+                                    Text(
+                                        text = item.houseInfo.houseName,
+                                        style = MaterialTheme.typography.titleLarge,
+                                        color = MaterialTheme.colorScheme.primary,
+                                    )
+                                    Spacer(Modifier.weight(0.6f))
+                                    Button(
+                                        onClick = {
+                                            showDeleteHouseDialog = true
+                                            houseToDelete = item.houseInfo
+                                        }
+                                        ) {
+                                        Text("删除", color = Color.White)
+                                    }
+                                }
+                                if (showDeleteHouseDialog) {
+                                    DeleteDialog(name = houseToDelete!!.houseName, onDismissRequest = {showDeleteHouseDialog = false}) {
+                                        scope.launch{
+                                            AccountManager.deleteHouse(houseToDelete!!.houseId)
+                                        }
+                                        showDeleteHouseDialog = false
+                                        update = !update
+                                    }
+                                }
                             }
                         ) {
                             for (member in item.memberInfo) {
@@ -97,7 +129,9 @@ fun HomeView() {
                                 }
                             }
                         }
+
                     }
+
                 }
             }
         }
@@ -106,11 +140,6 @@ fun HomeView() {
                 .fillMaxWidth()
                 .weight(0.5f)
         ) {
-            val scope = rememberCoroutineScope()
-            var areasList by remember { mutableStateOf<List<AreaInfo>?>(null) }
-            var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
-            var areaToDelete by remember { mutableStateOf<AreaInfo?>(null) }
-            var update by remember { mutableStateOf(false) }
             LaunchedEffect(update) {
                 scope.launch {
                     val areas = AccountManager.fetchAreasInfo()
@@ -154,7 +183,7 @@ fun HomeView() {
                                         Spacer(modifier = Modifier.width(16.dp))
                                         Button(
                                             onClick = {
-                                                showDeleteConfirmationDialog = true
+                                                showDeleteAreaDialog = true
                                                 areaToDelete = item
                                             }
                                         ) {
@@ -168,17 +197,17 @@ fun HomeView() {
                         }
                     }
                 }
-                if(showDeleteConfirmationDialog)
+                if(showDeleteAreaDialog)
                 {
                     DeleteDialog(
                         name = areaToDelete!!.areaName,
                         onDismissRequest = {
-                            showDeleteConfirmationDialog = false
+                            showDeleteAreaDialog = false
                         },
                         onDeleteConfirmed = {
                             scope.launch {
                                 AccountManager.deleteArea(areaToDelete!!.areaId)
-                                showDeleteConfirmationDialog = false
+                                showDeleteAreaDialog = false
                                 update = !update
                             }
                         }

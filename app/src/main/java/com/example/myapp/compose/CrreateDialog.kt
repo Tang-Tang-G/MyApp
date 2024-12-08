@@ -5,12 +5,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
@@ -20,19 +18,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
-import androidx.navigation.NavController
 import com.example.myapp.model.DataViewModel
 import com.example.myapp.model.HouseAdd
-import com.example.myapp.model.HouseInfo
 import com.example.myapp.model.activityViewModel
 import com.example.myapp.network.AccountManager
 import com.example.myapp.network.apiWithToken
-import com.example.myapp.network.crateNewHouse
+import com.example.myapp.network.crateHouse
 import com.example.myapp.network.createArea
-import com.example.myapp.network.fetchHouseInfo
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -90,7 +84,7 @@ fun CreateHouseDialog(goBack: () -> Unit = {}) {
             } else {
                 isDuplicate = false
                 scope.launch {
-                    AccountManager.crateNewHouse(houseName.value)
+                    AccountManager.crateHouse(houseName.value)
                 }
                 goBack()
             }

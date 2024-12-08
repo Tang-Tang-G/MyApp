@@ -146,6 +146,7 @@ suspend fun AccountManager.deleteArea(accountId: Int): Boolean {
         return false
     }
 }
+
 suspend fun AccountManager.fetchHouseInfo(): List<HouseInfo>? {
     try {
         val response = apiWithToken.getHouseInfo()
@@ -160,7 +161,7 @@ suspend fun AccountManager.fetchHouseInfo(): List<HouseInfo>? {
     }
 }
 
-suspend fun AccountManager.crateNewHouse(houseName: String): Boolean {
+suspend fun AccountManager.crateHouse(houseName: String): Boolean {
     try {
         val response = apiWithToken.createHouse(houseAdd = HouseAdd(houseName))
         if (response.code == 200) {
@@ -173,7 +174,19 @@ suspend fun AccountManager.crateNewHouse(houseName: String): Boolean {
         return false
     }
 }
-
+suspend fun AccountManager.deleteHouse(houseId: Int): Boolean {
+    try {
+        val response = apiWithToken.deleteHouse(houseId)
+        if (response.code == 200) {
+            return true
+        }
+        Log.e("deleteHouse", response.message)
+        return false
+    } catch (e: Exception) {
+        Log.e("deleteHouse", e.message, e)
+        return false
+    }
+}
 suspend fun AccountManager.updateAccount(
     oldPassword: String,
     newPassword: String?,

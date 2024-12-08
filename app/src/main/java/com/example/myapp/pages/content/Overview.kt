@@ -79,13 +79,6 @@ fun OverView() {
                                     style = MaterialTheme.typography.titleLarge,
                                     color = MaterialTheme.colorScheme.primary
                                 )
-                                Spacer(modifier = Modifier.size(10.dp))
-                                Text("家庭ID：")
-                                Text(
-                                    text = item.houseInfo.houseId.toString(),
-                                    style = MaterialTheme.typography.titleLarge,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
                             }
                         }
                     ) {

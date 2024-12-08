@@ -87,6 +87,9 @@ interface Tapi {
 
     @POST("my/house")
     suspend fun createHouse(@Body houseAdd: HouseAdd): ApiResponse<Int>
+
+    @DELETE("my/house/{houseId}")
+    suspend fun deleteHouse(@Path("houseId") houseId:Int): ApiResponse<Unit>
 }
 
 
