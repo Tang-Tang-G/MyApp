@@ -12,18 +12,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -34,38 +39,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.example.myapp.model.AccountDevices
 import com.example.myapp.network.executeDeviceService
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.float
+import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-
-
-@Composable
-fun DeviceList(accountDevices: AccountDevices) {
-    LazyColumn(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        items(accountDevices.housesDevices) { item ->
-            ExpandableNestedCards(
-                title = { Text(text = item.houseInfo.houseName) }
-            ) {
-                for (area in item.areasDevices) {
-                    composable(
-                        title = { Text(text = area.areaInfo.areaName) }
-                    ) {
-                        LazyColumn {
-                            items(area.devices) { item ->
-                                Text(text = item.deviceName)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
 
 @Preview
@@ -260,14 +240,17 @@ fun SubCard(
 }
 
 @Composable
-fun DeviceControl(services: List<JsonObject>) {
+fun DeviceControl(
+    deviceId: Int,
+    services: List<JsonObject>,
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
         modifier = Modifier.fillMaxSize()
     ) {
         services.forEach { item ->
-            ControlCompose(4, item.jsonObject)
+            ControlCompose(deviceId, item.jsonObject)
         }
     }
 }
@@ -278,6 +261,7 @@ fun ControlCompose(deviceId: Int, service: JsonObject) {
     val type = service["type"]!!.jsonPrimitive.content
     val label = service["label"]!!.jsonPrimitive.content
     val callback = service["callback"]!!.jsonObject
+
     val scope = rememberCoroutineScope()
 
     Row(
@@ -287,58 +271,123 @@ fun ControlCompose(deviceId: Int, service: JsonObject) {
         Text(
             text = label,
             textAlign = TextAlign.Center,
-            modifier = Modifier.weight(2f),
             color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(end = 20.dp)
         )
         when (type) {
             "boolean" -> {
-                val onOpen = callback["onOpen"]!!.jsonObject
-                val onClose = callback["onClose"]!!.jsonObject
+                val onOpen = callback["onOpen"]?.jsonObject
+                val onClose = callback["onClose"]?.jsonObject
 
                 var open by remember { mutableStateOf(false) }
                 Switch(
                     checked = open,
-                    modifier = Modifier.weight(3f),
                     onCheckedChange = {
                         open = it
                         Log.d("Switch", "switched")
                         scope.launch {
-                            executeDeviceService(
-                                deviceId = deviceId,
-                                serviceName = (if (it) onOpen else onClose)["service_name"]!!.jsonPrimitive.content,
-                                method = (if (it) onOpen else onClose)["method"]!!.jsonPrimitive.content,
-                                body = null,
-                                contentType = null
-                            )
+                            if (onOpen != null && onClose != null)
+                                executeDeviceService(
+                                    deviceId = deviceId,
+                                    serviceName = (if (it) onOpen else onClose)["service_name"]!!.jsonPrimitive.content,
+                                    method = (if (it) onOpen else onClose)["method"]!!.jsonPrimitive.content,
+                                    body = null,
+                                    contentType = null
+                                )
                         }
                     },
                 )
             }
 
             "range" -> {
-                val onUpdate = callback["onUpdate"]!!.jsonObject
+                val onUpdate = callback["onUpdate"]?.jsonObject
+                val params = service["params"]?.jsonObject
+
+                val min = params?.get("min")?.jsonPrimitive?.float
+                val max = params?.get("max")?.jsonPrimitive?.float
+
+                Log.d("range", "min: $min, max: $max")
 
                 var value by remember { mutableFloatStateOf(0.0f) }
-                Slider(
-                    value = value,
-                    onValueChange = { value = it },
-                    modifier = Modifier.weight(weight = 3f),
-                    onValueChangeFinished = {
-                        scope.launch {
-                            executeDeviceService(
-                                deviceId = deviceId,
-                                serviceName = onUpdate["service_name"]!!.jsonPrimitive.content,
-                                method = onUpdate["method"]!!.jsonPrimitive.content,
-                                contentType = onUpdate["content_type"]!!.jsonPrimitive.content,
-                                body = (value * 100).toInt().toString(),
-                            )
+                Surface(
+                    color = MaterialTheme.colorScheme.surfaceContainer,
+                    shape = CircleShape
+                ) {
+                    Slider(
+                        value = value,
+                        onValueChange = { value = it },
+                        valueRange = if (min == null || max == null)
+                            0f..1f
+                        else
+                            min..max,
+                        onValueChangeFinished = {
+                            scope.launch {
+                                if (onUpdate != null) {
+                                    executeDeviceService(
+                                        deviceId = deviceId,
+                                        serviceName = onUpdate["service_name"]!!.jsonPrimitive.content,
+                                        method = onUpdate["method"]!!.jsonPrimitive.content,
+                                        contentType = onUpdate["content_type"]!!.jsonPrimitive.content,
+                                        body = value.toInt().toString(),
+                                    )
+                                }
+                            }
                         }
-                    }
-                )
+                    )
+                }
+            }
+
+            "radio" -> {
+                val onSet = callback["onSet"]?.jsonObject
+
+                val params = service["params"]?.jsonObject
+                val array = params?.get("options")?.jsonArray
+                val options = array?.map { it.jsonPrimitive.content }
+
+                if (options != null && onSet != null) {
+                    MyRadioButton(
+                        options = options,
+                        onClick = { selection ->
+                            scope.launch {
+                                executeDeviceService(
+                                    deviceId = deviceId,
+                                    serviceName = onSet["service_name"]!!.jsonPrimitive.content,
+                                    method = onSet["method"]!!.jsonPrimitive.content,
+                                    contentType = onSet["content_type"]!!.jsonPrimitive.content,
+                                    body = selection.toString(),
+                                )
+                            }
+                        }
+                    )
+                }
             }
 
             else -> {}
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyRadioButton(
+    options: List<String>,
+    onClick: (Int) -> Unit,
+) {
+    var selectedIndex by remember { mutableIntStateOf(0) }
+    SingleChoiceSegmentedButtonRow {
+        options.forEachIndexed { index, label ->
+            SegmentedButton(
+                onClick = {
+                    selectedIndex = index
+                    onClick(index)
+                },
+                shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
+                selected = index == selectedIndex
+            ) {
+                Text(label)
+            }
         }
     }
 }

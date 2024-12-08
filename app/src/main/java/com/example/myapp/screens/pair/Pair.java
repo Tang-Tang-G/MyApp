@@ -80,7 +80,6 @@ public abstract class Pair {
                 return PairingStatus.InterruptedError;
             case 8:
                 return PairingStatus.Finish;
-
             case 9:
                 return PairingStatus.WiFiConnectionTimeout;
 
@@ -95,6 +94,7 @@ public abstract class Pair {
     protected static final Logger logger = Logger.getLogger(Pair.class.getName());
     protected PairCallback callback;
     protected Message message;
+    protected String deviceInfo = "";
 
     public Pair(Message message, PairCallback callback) {
         this.message = message;
@@ -132,15 +132,17 @@ public abstract class Pair {
                 case WiFiConnected:
                     logger.info("connect to wifi");
                     callback.onWiFiConnected();
-                    if (message.host.isEmpty()) {
-                        return true;
-                    }
+
+//                    if (message.host.isEmpty()) {
+//                        return true;
+//                    }
                     break;
 
                 case HostConnected:
                     logger.info("connect to wifi and host");
                     callback.onHostConnected();
-                    return true;
+//                    return true;
+                    break;
 
                 case InterruptedError:
                     logger.info("another phone try to pair the device");
@@ -148,6 +150,14 @@ public abstract class Pair {
                     throw new PairingError("pairing was interrupted by another client", PairingStatus.InterruptedError);
 
                 case Finish:
+                    StringBuilder builder = new StringBuilder();
+                    int c = ins.read();
+                    while ((char)c != '\n') {
+                        builder.append((char)c);
+                        c = ins.read();
+                    }
+                    deviceInfo = builder.toString();
+                    logger.info(deviceInfo);
                     return true;
 
                 case HostConnectionTimeOut:

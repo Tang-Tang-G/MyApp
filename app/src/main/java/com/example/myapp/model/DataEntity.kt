@@ -85,14 +85,22 @@ data class Member(
 )
 
 @Serializable
-data class HouseAdd(
-    @SerialName("house_name") val houseName: String
+data class DeviceAdd(
+    @SerialName("efuse_mac") val eFuseMac: String,
+    @SerialName("device_name") val deviceName: String,
+    @SerialName("model_id") val modelId: Int,
+    @SerialName("area_id") val areaId: Int,
 )
 
 @Serializable
-data class AddArea(
+data class AreaAdd(
     @SerialName("house_id") val houseId: Int,
-    @SerialName("area_name") val houseName: String
+    @SerialName("area_name") val areaName: String,
+)
+
+@Serializable
+data class HouseAdd(
+    @SerialName("house_name") val houseName: String
 )
 
 @Serializable

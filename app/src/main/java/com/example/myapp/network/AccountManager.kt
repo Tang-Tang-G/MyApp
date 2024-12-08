@@ -80,7 +80,7 @@ suspend fun AccountManager.fetchUserInfo(): UserInfo? {
 
 suspend fun AccountManager.updateUserInfo(userInfo: UserInfo): Boolean {
     try {
-        val response = apiWithToken.updateUserInfo(userInfo)
+        val response = apiWithToken.addUserInfo(userInfo)
         if (response.code == 200) {
             return true
         }
