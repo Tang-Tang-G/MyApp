@@ -27,13 +27,14 @@ import com.example.myapp.model.LoginViewModel
 import com.example.myapp.model.activityViewModel
 
 @Composable
-fun DrawerContent(loginViewModel: LoginViewModel = activityViewModel(),
-                  onChangePasswordClick: () -> Unit = {},
-                  onUserInfoClick: () -> Unit = {},
-                  onAddHouseClick: () -> Unit = {} ,
-                  onCreateHouseClick: () -> Unit = {},
-                  onCreateSceneClick: () -> Unit = {},
-                  onCreateAreaClick: () -> Unit = {} ,
+fun DrawerContent(
+    loginViewModel: LoginViewModel = activityViewModel(),
+    onChangePasswordClick: () -> Unit = {},
+    onUserInfoClick: () -> Unit = {},
+    onAddHouseClick: () -> Unit = {},
+    onCreateHouseClick: () -> Unit = {},
+    onCreateSceneClick: () -> Unit = {},
+    onCreateAreaClick: () -> Unit = {},
 ) {
     val username by loginViewModel.username.observeAsState("Not Login")
     Surface(

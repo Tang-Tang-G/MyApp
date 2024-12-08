@@ -2,18 +2,20 @@ package com.example.myapp.network
 
 import com.example.myapp.model.AccountDevices
 import com.example.myapp.model.AccountRequest
-import com.example.myapp.model.AddArea
 import com.example.myapp.model.ApiResponse
+import com.example.myapp.model.AreaAdd
 import com.example.myapp.model.AreaInfo
+import com.example.myapp.model.DeviceAdd
 import com.example.myapp.model.HouseAdd
 import com.example.myapp.model.HouseInfo
 import com.example.myapp.model.Jwt
 import com.example.myapp.model.Member
-import com.example.myapp.model.NewAccountInfo
+import com.example.myapp.model.AccountUpdate
 import com.example.myapp.model.UserInfo
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -41,15 +43,15 @@ interface Tapi {
     @GET("userinfo")
     suspend fun getUserInfo(): ApiResponse<UserInfo>
 
-    // TODO: change to patch
-    @POST("userinfo")
+    @PATCH("userinfo")
     suspend fun updateUserInfo(@Body userinfo: UserInfo): ApiResponse<Unit>
 
     @POST("userinfo")
     suspend fun newUserInfo(@Body userinfo: UserInfo): ApiResponse<UserInfo>
 
     @PATCH("account")
-    suspend fun updateAccountInfo(@Body newAccountInfo: NewAccountInfo): ApiResponse<Unit>
+    suspend fun updateAccount(@Body newAccountInfo: AccountUpdate): ApiResponse<Unit>
+
     @GET("my/device")
     suspend fun getAllAccountDevices(): ApiResponse<AccountDevices>
 
@@ -58,14 +60,31 @@ interface Tapi {
 
     @GET("my/area")
     suspend fun getAreasInfo(): ApiResponse<List<AreaInfo>>
+
+    @POST("my/device")
+    suspend fun addDevice(@Body deviceAdd: DeviceAdd): ApiResponse<Int>
+
+    @POST("my/house")
+    suspend fun addHouse(@Body houseAdd: HouseAdd): ApiResponse<Int>
+
     @POST("my/area")
-    suspend fun createArea(@Body addArea: AddArea): ApiResponse<Int>
+    suspend fun addArea(@Body areaAdd: AreaAdd): ApiResponse<Int>
+
+    @GET("my/device/{id}/status")
+    suspend fun getDeviceStatus(@Path("id") deviceId: Int): ApiResponse<JsonObject>
+
+    @POST("my/area")
+    suspend fun createArea(@Body addArea: AreaAdd): ApiResponse<Int>
+
     @PATCH("my/area/{areaId}")
     suspend fun updateArea(@Path("areaId") areaId: Int, areaName:String): ApiResponse<Unit>
+
     @DELETE("my/area/{areaId}")
     suspend fun deleteArea(@Path("areaId") areaId: Int): ApiResponse<Unit>
+
     @GET("my/house")
     suspend fun getHouseInfo(): ApiResponse<List<HouseInfo>>
+
     @POST("my/house")
     suspend fun createHouse(@Body houseAdd: HouseAdd): ApiResponse<Int>
 }

@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -32,7 +33,8 @@ import androidx.compose.ui.unit.dp
 import com.example.myapp.compose.DeviceItem
 import com.example.myapp.compose.ExpandableNestedCards
 import com.example.myapp.compose.composable
-import com.example.myapp.model.AccountDevices
+import com.example.myapp.model.DataViewModel
+import com.example.myapp.model.activityViewModel
 import com.example.myapp.network.AccountManager
 import com.example.myapp.network.fetchData
 import kotlinx.coroutines.launch
@@ -45,12 +47,13 @@ fun OverView() {
         modifier = Modifier.fillMaxSize()
     ) {
         val scope = rememberCoroutineScope()
-        // TODO: make the device store locally
-        var deviceList by remember { mutableStateOf<AccountDevices?>(null) }
+        val deviceModel: DataViewModel = activityViewModel()
+        val deviceList by deviceModel.accountInfo.observeAsState()
+
         LaunchedEffect(Unit) {
             scope.launch {
                 val devices = AccountManager.fetchData()
-                deviceList = devices
+                devices?.also { deviceModel.setData(it) }
             }
         }
         deviceList?.let {
