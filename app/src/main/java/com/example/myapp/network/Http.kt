@@ -11,6 +11,7 @@ import com.example.myapp.model.HouseInfo
 import com.example.myapp.model.Jwt
 import com.example.myapp.model.Member
 import com.example.myapp.model.AccountUpdate
+import com.example.myapp.model.AreaRename
 import com.example.myapp.model.UserInfo
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -77,7 +78,7 @@ interface Tapi {
     suspend fun createArea(@Body addArea: AreaAdd): ApiResponse<Int>
 
     @PATCH("my/area/{areaId}")
-    suspend fun updateArea(@Path("areaId") areaId: Int, areaName:String): ApiResponse<Unit>
+    suspend fun renameArea(@Path("areaId") areaId: Int, @Body areaRename: AreaRename): ApiResponse<Unit>
 
     @DELETE("my/area/{areaId}")
     suspend fun deleteArea(@Path("areaId") areaId: Int): ApiResponse<Unit>

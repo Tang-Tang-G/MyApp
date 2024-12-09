@@ -6,6 +6,7 @@ import com.example.myapp.model.AccountRequest
 import com.example.myapp.model.AccountUpdate
 import com.example.myapp.model.AreaAdd
 import com.example.myapp.model.AreaInfo
+import com.example.myapp.model.AreaRename
 import com.example.myapp.model.HouseAdd
 import com.example.myapp.model.HouseInfo
 import com.example.myapp.model.Jwt
@@ -146,7 +147,19 @@ suspend fun AccountManager.deleteArea(accountId: Int): Boolean {
         return false
     }
 }
-
+suspend fun AccountManager.renameArea(areaId:Int, areaRename: AreaRename):Boolean {
+    try{
+        val response = apiWithToken.renameArea(areaId,areaRename)
+        if (response.code == 200) {
+            return true
+        }
+        Log.e("updateAreaName", response.message)
+        return false
+    }catch (e: Exception){
+        Log.e("updateArea", e.message, e)
+        return false
+    }
+}
 suspend fun AccountManager.fetchHouseInfo(): List<HouseInfo>? {
     try {
         val response = apiWithToken.getHouseInfo()

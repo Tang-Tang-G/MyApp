@@ -19,7 +19,7 @@ data class HouseInfo(
 @Serializable
 data class AreaInfo(
     @SerialName("area_id") val areaId: Int,
-    @SerialName("area_name") val areaName: String
+    @SerialName("area_name") var areaName: String
 )
 
 @Serializable
@@ -70,7 +70,7 @@ data class UserInfo(
 data class AccountUpdate(
     @SerialName("old_password") val oldPassword: String,
     @SerialName("new_password") val newPassword: String?,
-    @SerialName("account_name") val username: String?
+    @SerialName("account_name") val userName: String?
 )
 
 @Serializable
@@ -97,7 +97,10 @@ data class AreaAdd(
     @SerialName("house_id") val houseId: Int,
     @SerialName("area_name") val areaName: String,
 )
-
+@Serializable
+data class AreaRename(
+    @SerialName("area_name") var areaName: String?
+)
 @Serializable
 data class HouseAdd(
     @SerialName("house_name") val houseName: String

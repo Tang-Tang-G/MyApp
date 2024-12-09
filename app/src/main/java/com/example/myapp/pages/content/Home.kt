@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,6 +29,7 @@ import com.example.myapp.compose.DeleteDialog
 import com.example.myapp.compose.ExpandableNestedCards
 import com.example.myapp.compose.composable
 import com.example.myapp.model.AreaInfo
+import com.example.myapp.model.AreaRename
 import com.example.myapp.model.HouseInfo
 import com.example.myapp.model.Member
 import com.example.myapp.network.AccountManager
@@ -35,16 +37,21 @@ import com.example.myapp.network.deleteArea
 import com.example.myapp.network.deleteHouse
 import com.example.myapp.network.fetchAreasInfo
 import com.example.myapp.network.fetchMemberInfo
+import com.example.myapp.network.renameArea
 import kotlinx.coroutines.launch
 
 @Composable
 fun HomeView() {
     val scope = rememberCoroutineScope()
     var areasList by remember { mutableStateOf<List<AreaInfo>?>(null) }
+
     var showDeleteHouseDialog by remember { mutableStateOf(false) }
     var showDeleteAreaDialog by remember { mutableStateOf(false) }
+    var isRename by remember { mutableStateOf(false) }
+    var areaToRename by remember { mutableStateOf<AreaInfo?>(null) }
     var areaToDelete by remember { mutableStateOf<AreaInfo?>(null) }
     var houseToDelete by remember { mutableStateOf<HouseInfo?>(null) }
+
     var update by remember { mutableStateOf(false) }
     var memberList by remember { mutableStateOf<Member?>(null) }
 
@@ -78,7 +85,7 @@ fun HomeView() {
                             title = {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically
-                                ){
+                                ) {
                                     Text(
                                         text = item.houseInfo.houseName,
                                         style = MaterialTheme.typography.titleLarge,
@@ -90,13 +97,15 @@ fun HomeView() {
                                             showDeleteHouseDialog = true
                                             houseToDelete = item.houseInfo
                                         }
-                                        ) {
+                                    ) {
                                         Text("删除", color = Color.White)
                                     }
                                 }
                                 if (showDeleteHouseDialog) {
-                                    DeleteDialog(name = houseToDelete!!.houseName, onDismissRequest = {showDeleteHouseDialog = false}) {
-                                        scope.launch{
+                                    DeleteDialog(
+                                        name = houseToDelete!!.houseName,
+                                        onDismissRequest = { showDeleteHouseDialog = false }) {
+                                        scope.launch {
                                             AccountManager.deleteHouse(houseToDelete!!.houseId)
                                         }
                                         showDeleteHouseDialog = false
@@ -155,41 +164,80 @@ fun HomeView() {
             areasList?.let { list ->
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
-                ){
+                ) {
                     items(list) { item ->
                         ExpandableNestedCards(
                             title = {
-                                Text(
-                                    text = item.areaName,
-                                    style = MaterialTheme.typography.titleLarge,
-                                    color = MaterialTheme.colorScheme.primary,
-                                )
+                                if (isRename && areaToRename?.areaId == item.areaId) {
+                                    TextField(
+                                        value = areaToRename?.areaName ?: "",
+                                        onValueChange = { newValue ->
+                                            areaToRename = areaToRename?.copy(areaName = newValue)
+                                        },
+                                        label = { Text("重命名名称") },
+                                    )
+                                } else {
+                                    Text(
+                                        text = item.areaName,
+                                        style = MaterialTheme.typography.titleLarge,
+                                        color = MaterialTheme.colorScheme.primary,
+                                    )
+                                }
                             }
                         ) {
                             composable(
                                 title = {
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        Button(
-                                            onClick = {
-                                            }
+                                    if (isRename && areaToRename?.areaId == item.areaId) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
                                         ) {
-                                            Text(
-                                                text = "重命名"
-                                            )
+                                            Button(onClick = {
+                                                scope.launch {
+                                                    AccountManager.renameArea(
+                                                        areaId = areaToRename!!.areaId,
+                                                        areaRename = AreaRename(areaToRename!!.areaName)
+                                                    )
+                                                    isRename = false
+                                                    update = !update
+                                                }
+                                            }) {
+                                                Text("确认")
+                                            }
+                                            Spacer(modifier = Modifier.width(16.dp))
+                                            Button(onClick = {
+                                                isRename = false
+                                            }) {
+                                                Text("取消")
+                                            }
                                         }
-                                        Spacer(modifier = Modifier.width(16.dp))
-                                        Button(
-                                            onClick = {
-                                                showDeleteAreaDialog = true
-                                                areaToDelete = item
-                                            }
+                                    } else {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween
                                         ) {
-                                            Text(
-                                                text = "删除"
-                                            )
+                                            Button(
+                                                onClick = {
+                                                    isRename = true
+                                                    areaToRename = item
+                                                }
+                                            ) {
+                                                Text(
+                                                    text = "重命名"
+                                                )
+                                            }
+                                            Spacer(modifier = Modifier.width(16.dp))
+                                            Button(
+                                                onClick = {
+                                                    showDeleteAreaDialog = true
+                                                    areaToDelete = item
+                                                }
+                                            ) {
+                                                Text(
+                                                    text = "删除"
+                                                )
+                                            }
                                         }
                                     }
                                 }
@@ -197,8 +245,7 @@ fun HomeView() {
                         }
                     }
                 }
-                if(showDeleteAreaDialog)
-                {
+                if (showDeleteAreaDialog) {
                     DeleteDialog(
                         name = areaToDelete!!.areaName,
                         onDismissRequest = {
@@ -211,8 +258,9 @@ fun HomeView() {
                                 update = !update
                             }
                         }
-                    )}
+                    )
                 }
-        }
+            }
         }
     }
+}
