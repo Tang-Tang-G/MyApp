@@ -4,27 +4,17 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -54,7 +44,7 @@ import com.example.myapp.compose.TopBarWithBack
 import com.example.myapp.model.AreaAdd
 import com.example.myapp.model.DataViewModel
 import com.example.myapp.model.DeviceAdd
-import com.example.myapp.model.HouseAdd
+import com.example.myapp.model.HouseCreate
 import com.example.myapp.model.activityViewModel
 import com.example.myapp.navigateTo
 import com.example.myapp.network.apiWithToken
@@ -338,7 +328,8 @@ fun PairDevice(
                                 try {
                                     // New House
                                     if (houseIndex >= houseNames.size) {
-                                        val resp = apiWithToken.addHouse(HouseAdd(newHouseName))
+                                        val resp =
+                                            apiWithToken.createHouse(HouseCreate(newHouseName))
                                         if (resp.code != 200 || resp.data == null) {
                                             delay(100)
                                             throw Error("new house response error")

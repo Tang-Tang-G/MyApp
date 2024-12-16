@@ -29,6 +29,10 @@ class LoginViewModel : ViewModel() {
         _token.value = token
     }
 
+    fun updateUserName(userName: String) {
+        _username.value = userName
+    }
+
     fun setLoginInfo(username: String, token: String) {
         Log.d("viewmodel", "save $username, $token")
         _username.value = username
@@ -51,6 +55,5 @@ class DataViewModel : ViewModel() {
     fun setData(data: AccountDevices) {
         _accountInfo.value = data
     }
-
 
 }

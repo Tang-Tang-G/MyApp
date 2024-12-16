@@ -2,16 +2,17 @@ package com.example.myapp.network
 
 import com.example.myapp.model.AccountDevices
 import com.example.myapp.model.AccountRequest
+import com.example.myapp.model.AccountUpdate
 import com.example.myapp.model.ApiResponse
 import com.example.myapp.model.AreaAdd
 import com.example.myapp.model.AreaInfo
+import com.example.myapp.model.AreaRename
 import com.example.myapp.model.DeviceAdd
-import com.example.myapp.model.HouseAdd
+import com.example.myapp.model.HouseCreate
 import com.example.myapp.model.HouseInfo
+import com.example.myapp.model.HouseJoin
 import com.example.myapp.model.Jwt
 import com.example.myapp.model.Member
-import com.example.myapp.model.AccountUpdate
-import com.example.myapp.model.AreaRename
 import com.example.myapp.model.UserInfo
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -33,7 +34,7 @@ interface Api {
     suspend fun login(@Body accountRequest: AccountRequest): ApiResponse<Jwt>
 
     @POST("signup")
-    suspend fun signup(@Body accountRequest: AccountRequest): ApiResponse<Unit>
+    suspend fun signup(@Body accountRequest: AccountRequest)
 }
 
 
@@ -65,8 +66,8 @@ interface Tapi {
     @POST("my/device")
     suspend fun addDevice(@Body deviceAdd: DeviceAdd): ApiResponse<Int>
 
-    @POST("my/house")
-    suspend fun addHouse(@Body houseAdd: HouseAdd): ApiResponse<Int>
+    @POST("my/member")
+    suspend fun joinHouse(@Body houseJoin: HouseJoin): ApiResponse<Unit>
 
     @POST("my/area")
     suspend fun addArea(@Body areaAdd: AreaAdd): ApiResponse<Int>
@@ -78,7 +79,10 @@ interface Tapi {
     suspend fun createArea(@Body addArea: AreaAdd): ApiResponse<Int>
 
     @PATCH("my/area/{areaId}")
-    suspend fun renameArea(@Path("areaId") areaId: Int, @Body areaRename: AreaRename): ApiResponse<Unit>
+    suspend fun renameArea(
+        @Path("areaId") areaId: Int,
+        @Body areaRename: AreaRename
+    ): ApiResponse<Unit>
 
     @DELETE("my/area/{areaId}")
     suspend fun deleteArea(@Path("areaId") areaId: Int): ApiResponse<Unit>
@@ -87,10 +91,10 @@ interface Tapi {
     suspend fun getHouseInfo(): ApiResponse<List<HouseInfo>>
 
     @POST("my/house")
-    suspend fun createHouse(@Body houseAdd: HouseAdd): ApiResponse<Int>
+    suspend fun createHouse(@Body houseCreate: HouseCreate): ApiResponse<Int>
 
     @DELETE("my/house/{houseId}")
-    suspend fun deleteHouse(@Path("houseId") houseId:Int): ApiResponse<Unit>
+    suspend fun deleteHouse(@Path("houseId") houseId: Int): ApiResponse<Unit>
 }
 
 

@@ -1,5 +1,6 @@
 package com.example.myapp.screens.my
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,11 +15,14 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -26,6 +30,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.myapp.compose.TopBarWithBack
+import com.example.myapp.model.LoginViewModel
+import com.example.myapp.model.activityViewModel
 import com.example.myapp.network.AccountManager
 import com.example.myapp.network.updateAccount
 import kotlinx.coroutines.launch
@@ -35,10 +41,12 @@ fun ChangeAccountInfo(navController: NavController) {
     // 状态保存文本框中的输入值
     val oldPassword = remember { mutableStateOf("") }
     val newPassword = remember { mutableStateOf("") }
-    val username = remember { mutableStateOf("") }
+    var username: String? by remember { mutableStateOf(null) }
     val isOldPasswordValid = remember { mutableStateOf(true) }
     val focusManager = LocalFocusManager.current
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val loginViewModel: LoginViewModel = activityViewModel()
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -50,7 +58,7 @@ fun ChangeAccountInfo(navController: NavController) {
                 .padding(16.dp)
         ) {
             TopBarWithBack(
-                title = "修改密码",
+                title = "修改账户信息",
                 goBack = { navController.popBackStack() }
             )
             Spacer(
@@ -98,8 +106,8 @@ fun ChangeAccountInfo(navController: NavController) {
                     .height(20.dp)
             )
             TextField(
-                value = username.value,
-                onValueChange = { username.value = it },
+                value = username ?: "",
+                onValueChange = { username = it },
                 label = { Text("新用户名") },
                 keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
                 keyboardOptions = KeyboardOptions.Default.copy(
@@ -115,15 +123,23 @@ fun ChangeAccountInfo(navController: NavController) {
             Button(onClick = {
                 if (oldPassword.value.isEmpty()) {
                     isOldPasswordValid.value = false
-                }else {
+                } else {
                     scope.launch {
-                        AccountManager.updateAccount(
+                        val ok = AccountManager.updateAccount(
                             oldPassword = oldPassword.value,
                             newPassword = if (newPassword.value.isEmpty()) null else newPassword.value,
-                            username = if (username.value.isEmpty()) null else username.value
+                            username = if (username.isNullOrEmpty()) null else username
                         )
+                        if (ok) {
+                            username?.let {
+                                loginViewModel.updateUserName(it)
+                            }
+                            Toast.makeText(context, "修改成功", Toast.LENGTH_SHORT)
+                                .show()
+                            navController.popBackStack()
+                        }
                     }
-                    navController.popBackStack()
+
                 }
             }) {
                 Text(text = "提交")

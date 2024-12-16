@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.example.myapp.model.DataViewModel
-import com.example.myapp.model.HouseAdd
+import com.example.myapp.model.HouseCreate
 import com.example.myapp.model.activityViewModel
 import com.example.myapp.network.AccountManager
 import com.example.myapp.network.apiWithToken
@@ -73,7 +73,7 @@ fun CreateHouseDialog(goBack: () -> Unit = {}) {
     val deviceModel: DataViewModel = activityViewModel()
     val data by deviceModel.accountInfo.observeAsState()
     val houses = data?.housesDevices
-    var houseList =houses?.map { it.houseInfo.houseName } ?: listOf()
+    var houseList = houses?.map { it.houseInfo.houseName } ?: listOf()
     val scope = rememberCoroutineScope()
 
     CreateDialog(
@@ -125,17 +125,16 @@ fun CreateAreaDialog(goBack: () -> Unit = {}) {
         onCreate = {
             scope.launch {
                 var houseId = houseIds.getOrNull(houseIndex)
-                // New House
                 if (houseIndex >= houseNames.size) {
-                    val resp = apiWithToken.addHouse(HouseAdd(newHouseName))
+                    val resp = apiWithToken.createHouse(HouseCreate(newHouseName))
                     if (resp.code != 200 || resp.data == null) {
                         delay(100)
                         throw Error("new house response error")
                     }
                     houseId = resp.data
                 }
-                if(areaName.value!="") {
-                    houseId?.let { AccountManager.createArea(it,areaName.value) }
+                if (areaName.value != "") {
+                    houseId?.let { AccountManager.createArea(it, areaName.value) }
                 }
             }
             goBack()

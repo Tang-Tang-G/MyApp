@@ -35,9 +35,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun Content(screenNavController: NavController) {
     val bottomNavList = NavigationModel.bottomNavList
-    // The current content page
     val pageSelection = remember { mutableIntStateOf(0) }
-    // used for navigate different content page
     val bottomNavController = rememberNavController()
 
     val overviewNav = stringResource(R.string.bottom_nav_overview_navigation)
@@ -53,6 +51,7 @@ fun Content(screenNavController: NavController) {
     val createHouseNav = stringResource(R.string.create_house_navigation)
     val createSceneNav = stringResource(R.string.create_scene_navigation)
     val createAreaNav = stringResource(R.string.create_area_navigation)
+    val exitHouseNav = stringResource(R.string.exit_house_navigation)
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val switchDrawer = {
@@ -78,9 +77,13 @@ fun Content(screenNavController: NavController) {
                     switchDrawer()
                     screenNavController.navigate(addHouseNav)
                 },
+                onExitHouseClick = {
+                    switchDrawer()
+                    screenNavController.navigate(exitHouseNav)
+                },
                 onCreateHouseClick = {
-                  switchDrawer()
-                  screenNavController.navigate(createHouseNav)
+                    switchDrawer()
+                    screenNavController.navigate(createHouseNav)
                 },
                 onCreateAreaClick = {
                     switchDrawer()

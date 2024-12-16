@@ -32,10 +32,12 @@ fun DrawerContent(
     onChangePasswordClick: () -> Unit = {},
     onUserInfoClick: () -> Unit = {},
     onAddHouseClick: () -> Unit = {},
+    onExitHouseClick: () -> Unit = {},
     onCreateHouseClick: () -> Unit = {},
     onCreateSceneClick: () -> Unit = {},
     onCreateAreaClick: () -> Unit = {},
-) {
+
+    ) {
     val username by loginViewModel.username.observeAsState("Not Login")
     Surface(
         modifier = Modifier
@@ -96,6 +98,17 @@ fun DrawerContent(
                     )
                 },
                 modifier = Modifier.clickable { onAddHouseClick() },
+            )
+            HorizontalDivider()
+            ListItem(
+                headlineContent = { Text("退出家庭") },
+                trailingContent = {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null
+                    )
+                },
+                modifier = Modifier.clickable { onExitHouseClick() },
             )
             HorizontalDivider()
             ListItem(

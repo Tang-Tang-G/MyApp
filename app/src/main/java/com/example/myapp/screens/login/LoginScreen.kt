@@ -63,7 +63,7 @@ fun Login(
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
+    LocalSoftwareKeyboardController.current
 
     Surface(
         modifier = Modifier.fillMaxSize()

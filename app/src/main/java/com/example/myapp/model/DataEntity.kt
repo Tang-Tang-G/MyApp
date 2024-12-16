@@ -97,13 +97,21 @@ data class AreaAdd(
     @SerialName("house_id") val houseId: Int,
     @SerialName("area_name") val areaName: String,
 )
+
 @Serializable
 data class AreaRename(
     @SerialName("area_name") var areaName: String?
 )
+
 @Serializable
-data class HouseAdd(
+data class HouseCreate(
     @SerialName("house_name") val houseName: String
+)
+
+@Serializable
+data class HouseJoin(
+    @SerialName("house_id") val houseId: Int,
+    @SerialName("account_id") val accountId: Int,
 )
 
 @Serializable

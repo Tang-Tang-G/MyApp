@@ -2,6 +2,7 @@ package com.example.myapp.pages.content
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.example.myapp.R
 import com.example.myapp.compose.DeviceItem
 import com.example.myapp.compose.ExpandableNestedCards
 import com.example.myapp.compose.composable
@@ -38,7 +40,6 @@ import com.example.myapp.model.activityViewModel
 import com.example.myapp.network.AccountManager
 import com.example.myapp.network.fetchData
 import kotlinx.coroutines.launch
-import com.example.myapp.R
 
 @Composable
 fun OverView() {
@@ -64,6 +65,7 @@ fun OverView() {
                     ExpandableNestedCards(
                         title = {
                             Row(
+
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Image(
@@ -73,12 +75,24 @@ fun OverView() {
                                         .width(30.dp)
                                 )
                                 Spacer(modifier = Modifier.size(10.dp))
+
                                 Text("家庭名：")
                                 Text(
                                     text = item.houseInfo.houseName,
                                     style = MaterialTheme.typography.titleLarge,
                                     color = MaterialTheme.colorScheme.primary
                                 )
+                                Row(
+                                    horizontalArrangement = Arrangement.End,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text(
+                                        text = item.houseInfo.houseId.toString(),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = MaterialTheme.colorScheme.secondary,
+                                    )
+                                }
+
                             }
                         }
                     ) {

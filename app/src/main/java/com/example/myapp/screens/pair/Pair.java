@@ -10,54 +10,14 @@ import java.io.OutputStream;
 import java.util.logging.Logger;
 
 public abstract class Pair {
-    public static class Message {
-        String ssid;
-        String password;
-        String host;
+    protected static final Logger logger = Logger.getLogger(Pair.class.getName());
+    protected PairCallback callback;
+    protected Message message;
+    protected String deviceInfo = "";
 
-        Message(String ssid, String password, String host) {
-            this.host = host;
-            this.password = password;
-            this.ssid = ssid;
-        }
-    }
-
-    public enum PairingStatus {
-        MessageOk,
-        AskConfig,
-        MessageTooLongError,
-        FormatError,
-        WiFiConnected,
-        HostConnected,
-        InterruptedError,
-        UnknownError,
-        Finish,
-        WiFiConnectionTimeout,
-        HostConnectionTimeOut,
-    }
-
-    public static class PairingError extends Throwable {
-        String message;
-        PairingStatus status;
-
-        PairingError(String message, PairingStatus status) {
-            this.message = message;
-            this.status = status;
-        }
-    }
-
-    public interface PairCallback {
-        void onMessageOk();
-
-        void onAskConfig();
-
-        void onMessageErr();
-
-        void onWiFiConnected();
-
-        void onHostConnected();
-
-        void onOtherError();
+    public Pair(Message message, PairCallback callback) {
+        this.message = message;
+        this.callback = callback;
     }
 
     protected static PairingStatus getPairingStatus(int code) {
@@ -89,16 +49,6 @@ public abstract class Pair {
             default:
                 return PairingStatus.UnknownError;
         }
-    }
-
-    protected static final Logger logger = Logger.getLogger(Pair.class.getName());
-    protected PairCallback callback;
-    protected Message message;
-    protected String deviceInfo = "";
-
-    public Pair(Message message, PairCallback callback) {
-        this.message = message;
-        this.callback = callback;
     }
 
     public boolean devicePair(@NonNull OutputStream out, @NonNull InputStream ins) throws PairingError, IOException {
@@ -152,8 +102,8 @@ public abstract class Pair {
                 case Finish:
                     StringBuilder builder = new StringBuilder();
                     int c = ins.read();
-                    while ((char)c != '\n') {
-                        builder.append((char)c);
+                    while ((char) c != '\n') {
+                        builder.append((char) c);
                         c = ins.read();
                     }
                     deviceInfo = builder.toString();
@@ -178,4 +128,53 @@ public abstract class Pair {
     }
 
     abstract boolean pair();
+    public enum PairingStatus {
+        MessageOk,
+        AskConfig,
+        MessageTooLongError,
+        FormatError,
+        WiFiConnected,
+        HostConnected,
+        InterruptedError,
+        UnknownError,
+        Finish,
+        WiFiConnectionTimeout,
+        HostConnectionTimeOut,
+    }
+
+    public interface PairCallback {
+        void onMessageOk();
+
+        void onAskConfig();
+
+        void onMessageErr();
+
+        void onWiFiConnected();
+
+        void onHostConnected();
+
+        void onOtherError();
+    }
+
+    public static class Message {
+        String ssid;
+        String password;
+        String host;
+
+        Message(String ssid, String password, String host) {
+            this.host = host;
+            this.password = password;
+            this.ssid = ssid;
+        }
+    }
+
+    public static class PairingError extends Throwable {
+        String message;
+        PairingStatus status;
+
+        PairingError(String message, PairingStatus status) {
+            this.message = message;
+            this.status = status;
+        }
+    }
 }

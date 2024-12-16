@@ -19,6 +19,7 @@ import com.example.myapp.compose.AddHouseDialog
 import com.example.myapp.compose.CreateAreaDialog
 import com.example.myapp.compose.CreateHouseDialog
 import com.example.myapp.compose.CreateSceneDialog
+import com.example.myapp.compose.ExitHouseDialog
 import com.example.myapp.model.InitModel
 import com.example.myapp.model.LoginViewModel
 import com.example.myapp.model.SessionManager
@@ -129,28 +130,33 @@ fun MainView() {
                 navController.popBackStack()
             })
         }
-        composable("UserInfo"){
+        composable("UserInfo") {
             UserInfoPage(navController)
         }
-        composable("ChangePassword"){
+        composable("ChangePassword") {
             ChangeAccountInfo(navController)
         }
-        composable("AddHouse"){
+        composable("AddHouse") {
             AddHouseDialog(goBack = {
                 navController.popBackStack()
             })
         }
-        composable("CreateHouse"){
+        composable("CreateHouse") {
             CreateHouseDialog(goBack = {
                 navController.popBackStack()
             })
         }
-        composable("CreateScene"){
+        composable("exitHouse") {
+            ExitHouseDialog(goBack = {
+                navController.popBackStack()
+            })
+        }
+        composable("CreateScene") {
             CreateSceneDialog(goBack = {
                 navController.popBackStack()
             })
         }
-        composable("CreateArea"){
+        composable("CreateArea") {
             CreateAreaDialog(goBack = {
                 navController.popBackStack()
             })

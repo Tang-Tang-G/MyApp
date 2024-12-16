@@ -70,7 +70,7 @@ fun MyStartView(
             )
             HorizontalDivider()
             ListItem(
-                headlineContent = { Text("修改密码") },
+                headlineContent = { Text("修改账户信息") },
                 trailingContent = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,

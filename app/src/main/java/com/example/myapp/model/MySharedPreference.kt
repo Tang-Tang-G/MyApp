@@ -22,7 +22,7 @@ object SessionManager {
     fun getUsername(context: Context): String? {
         return getPreferences(context).getString(KEY_USERNAME, null)
     }
-    
+
     fun getToken(context: Context): String? {
         return getPreferences(context).getString(KEY_TOKEN, null)
     }

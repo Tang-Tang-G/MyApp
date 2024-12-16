@@ -15,10 +15,10 @@ fun DeleteDialog(
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = {
-            Text(text = "确认删除")
+            Text(text = "确认退出")
         },
         text = {
-            Text("您确定要删除区域 “${name}” 吗？")
+            Text("您确定要退出区域 “${name}” 吗？")
         },
         confirmButton = {
             Button(

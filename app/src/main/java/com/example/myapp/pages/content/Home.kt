@@ -98,7 +98,7 @@ fun HomeView() {
                                             houseToDelete = item.houseInfo
                                         }
                                     ) {
-                                        Text("删除", color = Color.White)
+                                        Text("退出", color = Color.White)
                                     }
                                 }
                                 if (showDeleteHouseDialog) {

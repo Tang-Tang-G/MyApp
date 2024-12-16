@@ -1,28 +1,30 @@
 package com.example.myapp.compose
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.example.myapp.model.DataViewModel
 import com.example.myapp.model.activityViewModel
 import com.example.myapp.network.AccountManager
-import com.example.myapp.network.joinHouse
+import com.example.myapp.network.deleteHouse
 import kotlinx.coroutines.launch
 
 @Composable
-fun AddDialog(
+fun ExitDialog(
     onDismissRequest: () -> Unit,
     onCreate: () -> Unit,
     title: String = "添加",
@@ -43,7 +45,7 @@ fun AddDialog(
                     onDismissRequest()
                 }
             ) {
-                Text("添加")
+                Text("退出")
             }
         },
         dismissButton = {
@@ -59,39 +61,31 @@ fun AddDialog(
 }
 
 @Composable
-fun AddHouseDialog(goBack: () -> Unit = {}) {
-    val accountViewModel: DataViewModel = activityViewModel()
-    val data by accountViewModel.accountInfo.observeAsState()
-    val accountId = data?.accountInfo?.accountId
-    var houseIdInput by remember { mutableStateOf("") }
+fun ExitHouseDialog(goBack: () -> Unit = {}) {
+    val deviceModel: DataViewModel = activityViewModel()
+    val data by deviceModel.accountInfo.observeAsState()
+    val houses = data?.housesDevices
+    val houseNames = houses?.map { it.houseInfo.houseName } ?: listOf()
+    val houseIds = houses?.map { it.houseInfo.houseId } ?: listOf()
+    var houseIndex by remember { mutableIntStateOf(0) }
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
-    AddDialog(
+    LocalContext.current
+    ExitDialog(
         onCreate = {
             scope.launch {
-                accountId?.let {
-                    if (AccountManager.joinHouse(it, houseIdInput.toInt())) {
-                        Toast.makeText(context, "加入家庭成功", Toast.LENGTH_SHORT)
-                            .show()
-                        goBack()
-                    } else {
-                        Toast.makeText(context, "加入家庭不存在", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                }
+                var houseId = houseIds.getOrNull(houseIndex)
+                houseId?.let { AccountManager.deleteHouse(it) }
             }
         },
-        title = "加入家庭",
+        title = "退出家庭",
         onDismissRequest = {
             goBack()
         },
         content = {
-
-            TextField(
-                value = houseIdInput,
-                onValueChange = { houseIdInput = it },
-                label = { Text("加入家庭ID") },
-            )
+            DropdownSelectMenu(items = houseNames,
+                defaultItemValue = "",
+                onSelect = { houseIndex = it })
+            Spacer(modifier = Modifier.size(10.dp))
         }
     )
 }

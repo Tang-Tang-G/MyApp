@@ -43,7 +43,7 @@ fun DeviceItem(device: DeviceInfo, open: Boolean) {
                     "fan" -> R.drawable.fan
                     "tv" -> R.drawable.tv
                     "air-condition" -> R.drawable.air_condition
-                    else -> R.drawable.light // TODO: change this picture
+                    else -> R.drawable.default_device // TODO: change this picture
                 }
                 Image(
                     painter = painterResource(id = imageRes),
@@ -138,6 +138,7 @@ fun DeviceStatus(deviceId: Int) {
                                 color = MaterialTheme.colorScheme.secondary
                             )
                         }
+
                         else -> {}
                     }
                 }

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -23,10 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.myapp.compose.TopBarWithBack
 import com.example.myapp.network.AccountManager
 import com.example.myapp.network.signup
@@ -44,7 +41,7 @@ fun SignUp(navController: NavController) {
     var isPasswordError by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val snackBarHostState = remember { SnackbarHostState() }
+    remember { SnackbarHostState() }
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -122,7 +119,7 @@ fun SignUp(navController: NavController) {
                     email = value
                 },
                 label = {
-                    Text("Email") // TODO: add to strings.xml, replaced by stringResource
+                    Text("Email")
                 },
                 singleLine = true
             )
@@ -140,20 +137,22 @@ fun SignUp(navController: NavController) {
                                 Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                             }
                         } else {
-                            val loginInfo =
-                                AccountManager.signup(username = username, password = password)
-                            if (loginInfo == null) {
+                            val ok = AccountManager.signup(username = username, password = password)
+                            if (ok) {
                                 val job = launch {
-                                    snackBarHostState.showSnackbar(
-                                        "注册成功",
-                                        duration = SnackbarDuration.Short
-                                    )
+                                    Toast.makeText(context, "注册成功", Toast.LENGTH_SHORT)
+                                        .show()
                                 }
                                 delay(500)
                                 job.cancel()
                                 navController.popBackStack()
                             } else {
-                                snackBarHostState.showSnackbar("注册失败,用户名已经存在")
+                                Toast.makeText(
+                                    context,
+                                    "注册失败,用户名已经存在",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
                             }
                         }
                     }
@@ -171,10 +170,4 @@ fun validatePassword(password: String): String? {
     return if (!password.matches(passwordRegex.toRegex())) {
         "密码必须至少8位，并且包含字母和数字"
     } else null
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SignupPreview() {
-    SignUp(rememberNavController())
 }
